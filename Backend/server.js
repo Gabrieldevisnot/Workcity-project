@@ -9,24 +9,106 @@ const app = express();
 app.use(express.json());
 app.use(cors()); // Permite que o Frontend acesse o Backend
 
+
+// --- 🕵️‍♂️ O DETETIVE (Adicione este bloco AQUI) ---
+app.use((req, res, next) => {
+    console.log(`📢 CHEGOU: ${req.method} ${req.url}`);
+    next(); // Passa para o próximo passo
+});
+// --------------------------------------------------
 // CONEXÃO COM O BANCO (ATENÇÃO AQUI)
 const pool = new Pool({
     // Formato: postgres://usuario:senha@localhost:5432/nome_do_banco
     connectionString: 'postgres://postgres:Sout.ln102030@localhost:5432/workcity_db'
 });
-// --- MIDDLEWARE DE AUTENTICAÇÃO (O Segurança) ---
+// --- MIDDLEWARE DE AUTENTICAÇÃO (COM LOGS) ---
 function authenticateToken(req, res, next) {
+    console.log("👮‍♂️ Segurança: Verificando crachá...");
+    
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Pega o token "Bearer XYZ..."
+    const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.status(401).json({ message: "Acesso negado. Faça login." });
+    if (!token) {
+        console.log("👮‍♂️ Segurança: BARRADO! Nenhum token enviado.");
+        return res.status(401).json({ message: "Token não fornecido." });
+    }
 
     jwt.verify(token, 'SEGREDO_WORKCITY', (err, user) => {
-        if (err) return res.status(403).json({ message: "Token inválido." });
-        req.user = user; // Salva os dados do usuário na requisição
-        next(); // Pode passar!
+        if (err) {
+            console.log("👮‍♂️ Segurança: BARRADO! Token inválido ou expirado.");
+            console.log("Erro:", err.message); // Vai mostrar o motivo exato
+            return res.status(403).json({ message: "Token inválido." });
+        }
+        
+        console.log(`👮‍♂️ Segurança: LIBERADO! Usuário ID: ${user.id}`);
+        req.user = user;
+        next(); // AQUI É O PASSE LIVRE PARA A ROTA
     });
 }
+
+// ... (imports e configurações iniciais) ...
+
+app.use(cors());
+app.use(express.json());
+
+// ... (função authenticateToken) ...
+
+// ======================================================
+// 🚨 A ROTA DO FEED DEVE SER A PRIMEIRA DE TODAS AS ROTAS
+// ======================================================
+app.get('/vagas/feed', authenticateToken, async (req, res) => {
+    const { busca, especialidade, cidade } = req.query;
+    const profissionalId = req.user.id;
+
+    console.log("--- PROCESSANDO FEED ---"); // Adicionei este log para confirmar
+
+    try {
+        let sql = `
+            SELECT v.*, u.name as nome_empresa 
+            FROM vagas v 
+            JOIN users u ON v.user_id = u.id 
+            WHERE v.status = 'aberta' 
+            AND v.id NOT IN (SELECT vaga_id FROM candidaturas WHERE profissional_id = $1)
+        `;
+        
+        const values = [profissionalId]; 
+        let counter = 2;
+
+        if (busca && busca.trim() !== '') {
+            sql += ` AND (v.titulo ILIKE $${counter} OR v.descricao ILIKE $${counter})`;
+            values.push(`%${busca}%`);
+            counter++;
+        }
+
+        if (especialidade && especialidade.trim() !== '') {
+            sql += ` AND v.especialidade ILIKE $${counter}`; 
+            values.push(especialidade);
+            counter++;
+        }
+
+        if (cidade && cidade.trim() !== '') {
+            sql += ` AND v.localizacao ILIKE $${counter}`;
+            values.push(`%${cidade}%`);
+            counter++;
+        }
+
+        sql += ` ORDER BY v.created_at DESC`;
+
+        console.log("--- SQL GERADO ---");
+        console.log(sql);
+        console.log("Valores:", values);
+
+        const result = await pool.query(sql, values);
+        res.json(result.rows);
+
+    } catch (err) {
+        console.error("Erro SQL:", err);
+        res.status(500).json({ message: "Erro ao buscar vagas" });
+    }
+});
+
+// ... (AQUI VÊM AS OUTRAS ROTAS: cadastro, login, criar vaga, etc.) ...
+// ...
 
 // --- ROTA DE CRIAR VAGA (Protegida pelo authenticateToken) ---
 app.post('/vagas', authenticateToken, async (req, res) => {
