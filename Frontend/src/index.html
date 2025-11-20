@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkCity - Conectando Empresas e Profissionais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="navigateToHome()" class="flex items-center">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-building text-orange-500 text-3xl"></i>
+                        <div>
+                            <h3 class="text-xl font-bold">WorkCity</h3>
+                            <p class="text-sm text-gray-400">Engenharia Civil</p>
+                        </div>
+                    </div>
+                </button>
+                <nav class="hidden md:flex space-x-6">
+                    <button onclick="navigateToHome()" class="text-orange-500 hover:text-gray-900 transition-colors">
+                        Início
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900 transition-colors">
+                        Como Funciona
+                    </button>
+                </nav>
+            </div>
+            
+            <div class="flex items-center space-x-3" id="headerActions">
+                <button onclick="navigateTo('login-empresa.html')" class="hidden sm:inline-flex px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                    Sou Empresa
+                </button>
+                <button onclick="navigateTo('login-profissional.html')" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
+                    Sou Profissional
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Botão Flutuante para Usuários Logados -->
+    <div id="floatingDashboardBtn" class="hidden"></div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-b from-orange-50 to-white px-4 py-16">
+            <div class="max-w-7xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 max-w-4xl mx-auto">
+                    Conectamos empresas de engenharia civil com os melhores profissionais autônomos
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Encontre rapidamente pedreiros, pintores, eletricistas e outros especialistas qualificados 
+                    para seus projetos. Gerencie contratos, acompanhe progresso e otimize sua operação.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="navigateTo('login-empresa.html')" class="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition flex items-center justify-center gap-2">
+                        Sou uma Empresa
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button onclick="navigateTo('login-profissional.html')" class="px-8 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                        Sou um Profissional
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="px-4 py-16 bg-white">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                    Por que escolher a WorkCity?
+                </h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+                        <i class="fas fa-map-marker-alt text-orange-500 text-5xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Baseado em Localização</h3>
+                        <p class="text-gray-600">
+                            Encontre profissionais próximos ao seu projeto para reduzir custos e tempo de deslocamento.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+                        <i class="fas fa-users text-orange-500 text-5xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Matching Inteligente</h3>
+                        <p class="text-gray-600">
+                            Algoritmo avançado que conecta empresas com profissionais ideais baseado em especialidade e disponibilidade.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
+                        <i class="fas fa-clock text-orange-500 text-5xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Gestão Completa</h3>
+                        <p class="text-gray-600">
+                            Gerencie agenda, contratos, pagamentos e acompanhe o progresso dos projetos em tempo real.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- For Companies Section -->
+        <section class="px-4 py-16 bg-orange-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6 text-gray-900">Para Empresas de Engenharia</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-shield-alt text-orange-500 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">Profissionais Verificados</h4>
+                                    <p class="text-gray-600">Todos os profissionais passam por processo de verificação de qualificações e experiência.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-star text-orange-500 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">Sistema de Avaliações</h4>
+                                    <p class="text-gray-600">Avalie e seja avaliado. Construa reputação e encontre os melhores parceiros.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-clock text-orange-500 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">Economia de Tempo</h4>
+                                    <p class="text-gray-600">Reduza de dias para horas o tempo de busca e contratação de profissionais.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('login-empresa.html')" class="mt-8 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
+                            Começar Agora
+                        </button>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-900">Estatísticas da Plataforma</h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-500 mb-1">2.500+</div>
+                                <div class="text-gray-600">Profissionais</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-500 mb-1">180+</div>
+                                <div class="text-gray-600">Empresas</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-500 mb-1">5.200+</div>
+                                <div class="text-gray-600">Projetos</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-500 mb-1">4.8⭐</div>
+                                <div class="text-gray-600">Avaliação</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- For Professionals Section -->
+        <section class="px-4 py-16 bg-white">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-12 text-gray-900">Para Profissionais Autônomos</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-6">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Mais Oportunidades</h3>
+                        <p class="text-gray-600">
+                            Acesse projetos de múltiplas empresas e aumente sua renda mensal.
+                        </p>
+                    </div>
+                    <div class="p-6">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-map-marker-alt text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Trabalhe Próximo</h3>
+                        <p class="text-gray-600">
+                            Encontre projetos na sua região e otimize seu tempo de deslocamento.
+                        </p>
+                    </div>
+                    <div class="p-6">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shield-alt text-orange-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Pagamento Seguro</h3>
+                        <p class="text-gray-600">
+                            Sistema de pagamento garantido e transparente para todos os projetos.
+                        </p>
+                    </div>
+                </div>
+                <button onclick="navigateTo('login-profissional.html')" class="mt-8 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
+                    Cadastrar como Profissional
+                </button>
+            </div>
+        </section>
+
+        <!-- CTA Section para Usuários Logados -->
+        <section id="loggedUserCTA" class="hidden px-4 py-20 bg-gradient-to-r from-orange-500 to-orange-600">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 id="ctaTitle" class="text-3xl font-bold mb-4 text-white"></h2>
+                <p id="ctaDescription" class="text-lg mb-8 text-orange-50"></p>
+                <button id="ctaButton" class="px-10 py-3 bg-white text-orange-600 hover:bg-orange-50 rounded-md transition"></button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-building text-orange-500 text-2xl"></i>
+                        <div>
+                            <h3 class="text-xl font-bold">WorkCity</h3>
+                            <p class="text-sm text-gray-400">Engenharia Civil</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Conectando empresas de construção civil com os melhores profissionais. 
+                        Simplifique suas contratações e encontre talentos qualificados.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Como Funciona</button></li>
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Para Empresas</button></li>
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Para Profissionais</button></li>
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Contato</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Suporte</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Central de Ajuda</button></li>
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Termos de Uso</button></li>
+                        <li><button class="text-gray-400 hover:text-white transition-colors">Política de Privacidade</button></li>
+                        <li><button class="text-gray-400 hover:text-white transition-colors">FAQ</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">Contato</h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-envelope text-orange-500"></i>
+                            <span class="text-gray-400">contato@workcity.com.br</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-phone text-orange-500"></i>
+                            <span class="text-gray-400">(11) 3333-3333</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt text-orange-500"></i>
+                            <span class="text-gray-400">São Paulo, SP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">
+                    © 2024 WorkCity. Todos os direitos reservados.
+                </p>
+                <div class="flex items-center space-x-2 mt-4 md:mt-0">
+                    <i class="fas fa-users text-orange-500"></i>
+                    <span class="text-gray-400 text-sm">
+                        Conectando talentos da construção civil
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Profissional - WorkCity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white border-b border-gray-200 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="navigateToHome()">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-building text-orange-500 text-3xl"></i>
+                        <div>
+                            <h3 class="text-xl font-bold">WorkCity</h3>
+                            <p class="text-sm text-gray-400">Engenharia Civil</p>
+                        </div>
+                    </div>
+                </button>
+                <nav class="hidden md:flex space-x-6">
+                    <button class="text-orange-500">Dashboard</button>
+                </nav>
+            </div>
+            
+            <div id="headerActions" class="flex items-center space-x-3"></div>
+        </div>
+    </header>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard do Profissional</h1>
+                <p class="text-gray-600">Bem-vindo de volta! Encontre novas oportunidades e gerencie suas candidaturas.</p>
+            </div>
+
+            <div id="welcomeMsg" class="mb-8 p-4 bg-green-100 border border-green-200 rounded-lg flex items-center">
+                <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                <p class="text-green-800 font-medium">
+                    👋 Olá! Estamos buscando as melhores vagas para o seu perfil.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                    <div class="text-2xl font-bold text-orange-500" id="statsVagasDisponiveis">...</div>
+                    <div class="text-sm text-gray-600">Vagas Disponíveis</div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-500">0</div>
+                    <div class="text-sm text-gray-600">Candidaturas Enviadas</div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                    <div class="text-2xl font-bold text-green-500">0</div>
+                    <div class="text-sm text-gray-600">Em Processo</div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
+                    <div class="text-2xl font-bold text-purple-500">5.0⭐</div>
+                    <div class="text-sm text-gray-600">Sua Avaliação</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="border-b border-gray-200">
+                    <nav class="flex -mb-px">
+                        <button onclick="switchTab('vagas')" id="tabVagas" class="px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium">
+                            Buscar Vagas
+                        </button>
+                        <button onclick="switchTab('candidaturas')" id="tabCandidaturas" class="px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium">
+                            Minhas Candidaturas
+                        </button>
+                        <button onclick="switchTab('perfil')" id="tabPerfil" class="px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium">
+                            Meu Perfil
+                        </button>
+                    </nav>
+                </div>
+
+                <div id="contentVagas" class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Vagas Disponíveis</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <input type="text" id="filtroBusca" oninput="carregarFeed()" placeholder="Buscar por título..." class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <select id="filtroEspecialidade" onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                                <option value="">Todas as especialidades</option>
+                                <option value="pedreiro">Pedreiro</option>
+                                <option value="eletricista">Eletricista</option>
+                                <option value="pintor">Pintor</option>
+                                <option value="encanador">Encanador</option>
+                                <option value="carpinteiro">Carpinteiro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="text" id="filtroCidade" oninput="carregarFeed()" placeholder="Cidade (ex: SP)" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                        </div>
+                    </div>
+
+                    <div id="feedVagas" class="space-y-4">
+                        <div class="text-center text-gray-500 py-8">Carregando oportunidades...</div>
+                    </div>
+                </div>
+
+                <div id="contentCandidaturas" class="p-6 hidden">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Minhas Candidaturas</h2>
+                    <div class="space-y-4">
+                        <p class="text-gray-500">Você ainda não se candidatou a nenhuma vaga.</p>
+                    </div>
+                </div>
+
+                <div id="contentPerfil" class="p-6 hidden">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Meu Perfil</h2>
+                    <p class="text-gray-500">Funcionalidade de perfil em desenvolvimento.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/main.js"></script>
+    
+    <script>
+        // 1. Configuração Inicial
+        requireAuth('profissional');
+        updateHeaderForLoggedUser();
+
+        // 2. Lógica de Navegação (Tabs)
+        let currentTab = 'vagas';
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            ['vagas', 'candidaturas', 'perfil'].forEach(t => {
+                const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                const content = document.getElementById(`content${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                
+                if (t === tab) {
+                    btn.className = 'px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium';
+                    content.classList.remove('hidden');
+                    
+                    // Recarrega o conteúdo da aba clicada para garantir dados frescos
+                    if (tab === 'vagas') carregarFeed();
+                    if (tab === 'candidaturas') carregarMinhasCandidaturas();
+                } else {
+                    btn.className = 'px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium';
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        // 3. Formatadores
+        function formatarData(dataString) {
+            const data = new Date(dataString);
+            const hoje = new Date();
+            const diffDias = Math.ceil((hoje - data) / (1000 * 60 * 60 * 24));
+            if (diffDias <= 0) return 'Hoje';
+            if (diffDias === 1) return 'Ontem';
+            return `Há ${diffDias} dias`;
+        }
+
+        function formatarSalario(min, max) {
+            if (!min) return 'A combinar';
+            if (min && !max) return `A partir de R$ ${min}`;
+            return `R$ ${min} - R$ ${max}`;
+        }
+
+       
+        // 4. CARREGAR FEED COM FILTROS
+       // 4. CARREGAR FEED (Versão Corrigida)
+        async function carregarFeed() {
+            const container = document.getElementById('feedVagas');
+            const statsCounter = document.getElementById('statsVagasDisponiveis');
+            const token = JSON.parse(localStorage.getItem('token'));
+
+            // Captura valores
+            const buscaInput = document.getElementById('filtroBusca');
+            const espInput = document.getElementById('filtroEspecialidade');
+            const cidadeInput = document.getElementById('filtroCidade');
+
+            // Garante que pega o valor, mesmo se o elemento não existir (evita erros)
+            const busca = buscaInput ? buscaInput.value : '';
+            const especialidade = espInput ? espInput.value : '';
+            const cidade = cidadeInput ? cidadeInput.value : '';
+
+            // Monta a URL apenas com os campos preenchidos
+            const params = new URLSearchParams();
+            if (busca.trim()) params.append('busca', busca);
+            if (especialidade.trim()) params.append('especialidade', especialidade);
+            if (cidade.trim()) params.append('cidade', cidade);
+
+            console.log("Enviando filtros:", params.toString()); // Veja isso no F12 do navegador
+
+            try {
+                const response = await fetch(`${API_URL}/vagas/feed?${params.toString()}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const vagas = await response.json();
+
+                if(statsCounter) statsCounter.textContent = vagas.length;
+
+                if (vagas.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12 bg-gray-50 rounded-lg animate-fade-in">
+                            <i class="fas fa-filter text-gray-300 text-5xl mb-4"></i>
+                            <h3 class="text-gray-900 font-medium">Nenhuma vaga encontrada</h3>
+                            <p class="text-gray-500">Tente mudar os filtros de pesquisa.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // (O resto do código de renderização continua igual...)
+                container.innerHTML = vagas.map(vaga => `
+                    <div id="card-vaga-${vaga.id}" class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow animate-fade-in">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">${vaga.titulo}</h3>
+                                <p class="text-orange-600 font-medium text-sm mb-3">
+                                    <i class="fas fa-building mr-1"></i> ${vaga.nome_empresa}
+                                </p>
+                                <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
+                                    <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> ${vaga.localizacao}</span>
+                                    <span class="flex items-center gap-1 text-green-600 font-medium"><i class="fas fa-dollar-sign"></i> ${formatarSalario(vaga.salario_min, vaga.salario_max)}</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-4 line-clamp-2">${vaga.descricao}</p>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded capitalize">${vaga.especialidade || 'Geral'}</span>
+                                </div>
+                            </div>
+                            <button onclick="candidatar(${vaga.id})" class="ml-4 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition shadow-sm whitespace-nowrap">
+                                Candidatar-se
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        // 5. CARREGAR MINHAS CANDIDATURAS (ATUALIZADA COM BOTÃO DE REMOVER)
+        async function carregarMinhasCandidaturas() {
+            const container = document.getElementById('contentCandidaturas');
+            // Garante a estrutura da lista
+            container.innerHTML = `
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Minhas Candidaturas</h2>
+                <div id="listaCandidaturas" class="space-y-4">Carregando...</div>
+            `;
+            
+            const lista = document.getElementById('listaCandidaturas');
+            const token = JSON.parse(localStorage.getItem('token'));
+
+            try {
+                const response = await fetch(`${API_URL}/minhas-candidaturas`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const candidaturas = await response.json();
+
+                if (candidaturas.length === 0) {
+                    lista.innerHTML = `
+                        <div class="text-center py-8 text-gray-500 bg-white rounded-lg border border-gray-200">
+                            <p>Você ainda não se candidatou a nenhuma vaga.</p>
+                            <button onclick="switchTab('vagas')" class="mt-2 text-orange-500 hover:underline">Ir para Vagas</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                lista.innerHTML = candidaturas.map(cand => `
+                    <div id="candidatura-${cand.id}" class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between flex-wrap gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-900">${cand.titulo}</h3>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Enviada</span>
+                                </div>
+                                <p class="text-gray-600 mb-2">${cand.nome_empresa}</p>
+                                <div class="flex items-center gap-4 text-sm text-gray-500">
+                                    <span><i class="fas fa-calendar"></i> Enviado em ${new Date(cand.data_candidatura).toLocaleDateString('pt-BR')}</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> ${cand.localizacao}</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="cancelarCandidatura(${cand.id})" class="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-md transition text-sm flex items-center gap-2">
+                                <i class="fas fa-trash-alt"></i> Cancelar
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+                lista.innerHTML = '<p class="text-red-500">Erro ao carregar candidaturas.</p>';
+            }
+        }
+        
+
+        // 6. AÇÃO DE CANDIDATAR
+        async function candidatar(vagaId) {
+            const token = JSON.parse(localStorage.getItem('token'));
+            const btn = event.target;
+            const textoOriginal = btn.innerText;
+
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+
+            try {
+                const response = await fetch(`${API_URL}/candidaturas`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ vagaId })
+                });
+
+                if (response.ok) {
+                    // EFEITO VISUAL: Remove o card da lista de "Buscar Vagas"
+                    const card = document.getElementById(`card-vaga-${vagaId}`);
+                    if (card) {
+                        card.style.transition = "all 0.5s ease";
+                        card.style.opacity = "0";
+                        card.style.transform = "translateX(100px)";
+                        setTimeout(() => {
+                            card.remove(); // Remove do HTML
+                            // Atualiza contador
+                            const stats = document.getElementById('statsVagasDisponiveis');
+                            if(stats) stats.textContent = parseInt(stats.textContent) - 1;
+                            
+                            // Verifica se ficou vazio
+                            const container = document.getElementById('feedVagas');
+                            if(container.children.length === 0) {
+                                container.innerHTML = '<div class="text-center py-8 text-gray-500">Todas as vagas visualizadas!</div>';
+                            }
+                        }, 500);
+                    }
+                    showToast("Candidatura enviada com sucesso!", "success");
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                    btn.innerText = textoOriginal;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50');
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Erro de conexão.");
+                btn.innerText = textoOriginal;
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+            }
+        }
+
+        // 7. NOVA FUNÇÃO: CANCELAR CANDIDATURA
+        async function cancelarCandidatura(idCandidatura) {
+            // Confirmação para evitar cliques acidentais
+            if (!confirm("Tem a certeza que deseja remover esta candidatura?")) {
+                return;
+            }
+
+            const token = JSON.parse(localStorage.getItem('token'));
+            const card = document.getElementById(`candidatura-${idCandidatura}`);
+            
+            // Feedback visual imediato (opacidade)
+            if(card) card.style.opacity = '0.5';
+
+            try {
+                const response = await fetch(`${API_URL}/candidaturas/${idCandidatura}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    // Remove o card da lista visualmente
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                    
+                    // Atualiza o contador da dashboard se necessário (opcional)
+                    showToast("Candidatura removida.", "success");
+                    
+                    // Se ficou vazio após remover, mostra mensagem
+                    setTimeout(() => {
+                        const lista = document.getElementById('listaCandidaturas');
+                        if (lista && lista.children.length === 0) {
+                            carregarMinhasCandidaturas(); // Recarrega para mostrar o estado vazio
+                        }
+                    }, 350);
+
+                } else {
+                    alert("Erro ao remover candidatura.");
+                    if(card) card.style.opacity = '1'; // Volta ao normal
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Erro de conexão.");
+                if(card) card.style.opacity = '1';
+            }
+        }
+        
+        // Função Toast Simples (caso não tenha no main.js)
+        function showToast(msg, type) {
+            const div = document.createElement('div');
+            div.className = `fixed bottom-4 right-4 px-6 py-3 rounded shadow-lg text-white ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} animate-bounce`;
+            div.innerText = msg;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+
+        // Inicializa
+        carregarFeed();
+    </script>
+</body>
+</html>
