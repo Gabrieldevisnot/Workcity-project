@@ -437,6 +437,137 @@ app.get('/minhas-candidaturas', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Erro ao buscar candidaturas" });
     }
 });
+// ROTA: BUSCAR PROFISSIONAIS (Para a empresa encontrar talentos)
+app.get('/profissionais', authenticateToken, async (req, res) => {
+    const { busca, especialidade, cidade } = req.query;
+
+    try {
+        let sql = `
+            SELECT id, name, city, specialty, experience_years, email, phone 
+            FROM users 
+            WHERE user_type = 'profissional'
+        `;
+        
+        const values = [];
+        let counter = 1;
+
+        if (busca) {
+            sql += ` AND name ILIKE $${counter}`;
+            values.push(`%${busca}%`);
+            counter++;
+        }
+        if (especialidade) {
+            sql += ` AND specialty ILIKE $${counter}`; // ILIKE ignora maiúsculas
+            values.push(especialidade);
+            counter++;
+        }
+        if (cidade) {
+            sql += ` AND city ILIKE $${counter}`;
+            values.push(`%${cidade}%`);
+            counter++;
+        }
+
+        sql += ` ORDER BY created_at DESC`;
+
+        const result = await pool.query(sql, values);
+        res.json(result.rows);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erro ao buscar profissionais." });
+    }
+});
+
+// ROTA: ENVIAR CONVITE (PROPOSTA)
+app.post('/convites', authenticateToken, async (req, res) => {
+    const { profissionalId, vagaId, mensagem } = req.body;
+    const empresaId = req.user.id;
+
+    try {
+        await pool.query(
+            `INSERT INTO convites (empresa_id, profissional_id, vaga_id, mensagem) 
+             VALUES ($1, $2, $3, $4)`,
+            [empresaId, profissionalId, vagaId, mensagem]
+        );
+
+        res.json({ message: "Convite enviado com sucesso!" });
+
+    } catch (err) {
+        if (err.code === '23505') {
+            return res.status(400).json({ message: "Você já convidou este profissional para esta vaga." });
+        }
+        console.error(err);
+        res.status(500).json({ message: "Erro ao enviar convite." });
+    }
+});
+
+// ROTA: VER CONVITES RECEBIDOS (Para o Profissional)
+app.get('/minhas-propostas', authenticateToken, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT c.id, c.mensagem, c.status, c.created_at,
+                   u.name as nome_empresa,
+                   v.titulo as titulo_vaga, v.id as vaga_id, v.localizacao
+            FROM convites c
+            JOIN users u ON c.empresa_id = u.id
+            JOIN vagas v ON c.vaga_id = v.id
+            WHERE c.profissional_id = $1
+            ORDER BY c.created_at DESC
+        `, [req.user.id]);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erro ao buscar propostas" });
+    }
+});
+
+// ROTA: RESPONDER PROPOSTA (Aceitar/Recusar)
+app.post('/convites/:id/responder', authenticateToken, async (req, res) => {
+    const { status, vagaId } = req.body; // status: 'aceito' ou 'recusado'
+    const conviteId = req.params.id;
+    const profissionalId = req.user.id;
+
+    // Usamos 'client' para fazer uma Transação (tudo ou nada)
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN'); // Inicia transação
+
+        // 1. Atualiza o status do convite na tabela 'convites'
+        await client.query(
+            'UPDATE convites SET status = $1 WHERE id = $2 AND profissional_id = $3',
+            [status, conviteId, profissionalId]
+        );
+
+        // 2. Se ACEITOU, cria automaticamente a candidatura!
+        if (status === 'aceito') {
+            // Verifica se já não era candidato antes para não dar erro
+            const check = await client.query(
+                'SELECT * FROM candidaturas WHERE vaga_id = $1 AND profissional_id = $2',
+                [vagaId, profissionalId]
+            );
+
+            if (check.rowCount === 0) {
+                // Insere na tabela de candidaturas (aparecerá para a empresa!)
+                await client.query(
+                    'INSERT INTO candidaturas (vaga_id, profissional_id, status) VALUES ($1, $2, $3)',
+                    [vagaId, profissionalId, 'pendente'] 
+                );
+            }
+        }
+
+        await client.query('COMMIT'); // Confirma tudo
+        res.json({ message: `Proposta ${status} com sucesso!` });
+
+    } catch (err) {
+        await client.query('ROLLBACK'); // Desfaz se der erro
+        console.error(err);
+        res.status(500).json({ message: "Erro ao responder proposta" });
+    } finally {
+        client.release();
+    }
+});
 
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
