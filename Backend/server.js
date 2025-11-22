@@ -230,6 +230,23 @@ app.get('/minhas-vagas', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Erro ao buscar vagas" });
     }
 });
+// ROTA: OBTER DETALHES DE UMA ÚNICA VAGA
+app.get('/vagas/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query('SELECT * FROM vagas WHERE id = $1', [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Vaga não encontrada" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erro ao buscar vaga" });
+    }
+});
 // ROTA DO FEED (Filtrada: Não mostra o que eu já apliquei)
 app.get('/vagas/feed', authenticateToken, async (req, res) => {
     try {
