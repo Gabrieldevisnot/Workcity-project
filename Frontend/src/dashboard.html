@@ -71,7 +71,7 @@
                             <option value="eletricista">Eletricista</option>
                         </select>
                         <div class="flex gap-2">
-                            <select id="filtroUF" class="w-24 px-2 py-2 border border-gray-300 rounded-md" onchange="carregarCidades('filtroUF', 'listaCidades')"><option value="">UF</option></select>
+                            <select id="filtroUF" class="w-24 px-2 py-2 border border-gray-300 rounded-md" onchange="carregarCidades('filtroUF', 'listaCidades', 'filtroCidade')"><option value="">UF</option></select>
                             <div class="flex-1 relative">
                                 <input type="text" id="filtroCidade" list="listaCidades" placeholder="Cidade..." disabled onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
                                 <datalist id="listaCidades"></datalist>

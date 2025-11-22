@@ -1,6 +1,6 @@
 const IBGE_URL = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
 
-// 1. Carregar Estados (Igual ao anterior)
+// 1. Carregar Estados
 async function carregarEstados(idSelectUF) {
     const selectUF = document.getElementById(idSelectUF);
     if (!selectUF) return;
@@ -13,70 +13,62 @@ async function carregarEstados(idSelectUF) {
         
         estados.forEach(uf => {
             const option = document.createElement('option');
-            option.value = uf.sigla; 
-            option.innerText = uf.sigla; 
-            option.title = uf.nome; 
+            option.value = uf.sigla;
+            option.innerText = uf.sigla;
+            option.title = uf.nome; // Mostra o nome completo ao passar o mouse
             selectUF.appendChild(option);
         });
-
     } catch (error) {
         console.error('Erro IBGE:', error);
     }
 }
 
-// 2. Carregar Cidades (ATUALIZADO PARA DATALIST)
-async function carregarCidades(idSelectUF, idDataListCidades) {
+// 2. Carregar Cidades (CORRIGIDO: Recebe o ID do Input explicitamente)
+async function carregarCidades(idSelectUF, idDataList, idInputCidade) {
     const uf = document.getElementById(idSelectUF).value;
-    const dataList = document.getElementById(idDataListCidades);
+    const dataList = document.getElementById(idDataList);
+    const input = document.getElementById(idInputCidade);
     
-    // Precisamos pegar o INPUT associado para desbloqueá-lo
-    // Assumindo que o input tem o id 'filtroCidade' no dashboard
-    const inputCidade = document.getElementById('filtroCidade') || document.getElementById('localizacao'); 
-    
+    // Se não selecionou UF, bloqueia e limpa
     if (!uf) {
-        if(inputCidade) {
-            inputCidade.value = "";
-            inputCidade.disabled = true;
-            inputCidade.placeholder = "Selecione a UF primeiro...";
+        if(input) {
+            input.value = "";
+            input.disabled = true;
+            input.placeholder = "Selecione o Estado...";
         }
-        dataList.innerHTML = "";
+        if(dataList) dataList.innerHTML = "";
         return;
     }
 
-    if(inputCidade) {
-        inputCidade.disabled = true;
-        inputCidade.placeholder = "Carregando cidades...";
-        inputCidade.value = ""; // Limpa a busca anterior
+    // Bloqueia enquanto carrega (Feedback visual)
+    if(input) {
+        input.disabled = true;
+        input.placeholder = "Carregando cidades...";
+        input.value = "";
     }
 
     try {
         const response = await fetch(`${IBGE_URL}/${uf}/municipios`);
         const cidades = await response.json();
 
-        dataList.innerHTML = ""; // Limpa as opções antigas
+        if(dataList) dataList.innerHTML = ""; // Limpa lista antiga
         
         cidades.forEach(cidade => {
             const option = document.createElement('option');
-            // O valor será "Nome" (ex: Campinas)
-            // O input vai completar com isso
+            // Formato: "Campinas - SP"
             option.value = `${cidade.nome} - ${uf}`; 
-            dataList.appendChild(option);
+            if(dataList) dataList.appendChild(option);
         });
 
-        if(inputCidade) {
-            inputCidade.disabled = false;
-            inputCidade.placeholder = "Digite ou selecione a cidade...";
-            inputCidade.focus(); // Foca para o usuário já digitar
+        // Desbloqueia o campo para digitar
+        if(input) {
+            input.disabled = false;
+            input.placeholder = "Digite a cidade...";
+            input.focus();
         }
 
     } catch (error) {
         console.error('Erro ao carregar cidades:', error);
-        if(inputCidade) inputCidade.placeholder = "Erro ao carregar";
+        if(input) input.placeholder = "Erro na conexão";
     }
-}
-
-// Inicializa
-document.addEventListener('DOMContentLoaded', () => {
-    carregarEstados('filtroUF');
-    // Se tiver outros selects de estado na página (como no cadastro), adicione aqui
-});
+}//NÃO ALTERAR ESTE CODIGO, MUITA GAMBIRA

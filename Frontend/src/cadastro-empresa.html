@@ -43,21 +43,28 @@
                         <input type="text" id="endereco" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Cidade *</label>
-                            <input type="text" id="cidade" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Estado *</label>
-                            <select id="estado" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                                <option value="">Selecione...</option>
-                                <option value="SP">São Paulo</option>
-                                <option value="RJ">Rio de Janeiro</option>
-                                <option value="MG">Minas Gerais</option>
-                            </select>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Estado *</label>
+                        <select id="ufCadastro" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
+                            onchange="carregarCidades('ufCadastro', 'listaCidadesCadastro', 'cidadeCadastro')">
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cidade *</label>
+                        <div class="relative">
+                            <input type="text" id="cidadeCadastro" list="listaCidadesCadastro"
+                                required 
+                                disabled
+                                placeholder="Selecione o Estado primeiro..."
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 bg-gray-50 disabled:cursor-not-allowed">
+                            <datalist id="listaCidadesCadastro"></datalist>
                         </div>
                     </div>
+                </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -96,7 +103,12 @@
 
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
+    <script src="scripts/ibge.js"></script>
     <script>
+        // 1. Inicia o IBGE ao abrir a página
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarEstados('ufCadastro');
+    });
         document.getElementById('cadastroForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -114,8 +126,8 @@
                 email: document.getElementById('email').value,
                 telefone: document.getElementById('telefone').value,
                 endereco: document.getElementById('endereco').value,
-                cidade: document.getElementById('cidade').value,
-                estado: document.getElementById('estado').value,
+                cidade: document.getElementById('cidadeCadastro').value,
+                estado: document.getElementById('ufCadastro').value,
                 password: document.getElementById('password').value, // <--- O Backend precisa disso!
     
                 cadastroDate: new Date().toISOString()
