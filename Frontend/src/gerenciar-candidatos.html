@@ -11,28 +11,26 @@
     <div class="min-h-screen py-8">
         <div class="max-w-7xl mx-auto px-4">
             <div class="mb-6">
-                <button onclick="navigateTo('empresa-dashboard.html')" class="px-4 py-2 text-gray-600 hover:text-gray-900 transition flex items-center gap-2 mb-4">
+                <button onclick="window.location.href='empresa-dashboard.html'" class="px-4 py-2 text-gray-600 hover:text-gray-900 transition flex items-center gap-2 mb-4">
                     <i class="fas fa-arrow-left"></i>
                     Voltar para Dashboard
                 </button>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2" id="vagaTitle">Candidatos para Vaga</h1>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2" id="vagaTitle">Carregando vaga...</h1>
                         <p class="text-gray-600">Gerencie os candidatos que se interessaram pela sua vaga</p>
                     </div>
                     <div class="w-64">
                         <select id="ordenacaoSelect" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                            <option value="rating-desc">⭐ Maior Avaliação</option>
-                            <option value="rating-asc">Menor Avaliação</option>
                             <option value="data-desc">📅 Mais Recente</option>
                             <option value="data-asc">Mais Antigo</option>
+                            <option value="rating-desc">⭐ Maior Avaliação</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- Estatísticas -->
-            <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center">
                     <div class="text-2xl font-bold text-gray-900" id="statTotal">0</div>
                     <div class="text-sm text-gray-600">Total</div>
@@ -40,10 +38,6 @@
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center">
                     <div class="text-2xl font-bold text-gray-500" id="statPendente">0</div>
                     <div class="text-sm text-gray-600">Pendentes</div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-                    <div class="text-2xl font-bold text-blue-500" id="statVisualizado">0</div>
-                    <div class="text-sm text-gray-600">Visualizados</div>
                 </div>
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center">
                     <div class="text-2xl font-bold text-green-500" id="statAceito">0</div>
@@ -59,7 +53,6 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
             <div class="bg-white rounded-lg shadow-sm mb-6">
                 <div class="border-b border-gray-200">
                     <nav class="flex -mb-px flex-wrap">
@@ -69,141 +62,85 @@
                         <button onclick="switchFilter('pendente')" id="tabPendente" class="px-4 py-3 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium text-sm">
                             Pendentes (<span id="countPendente">0</span>)
                         </button>
-                        <button onclick="switchFilter('visualizado')" id="tabVisualizado" class="px-4 py-3 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium text-sm">
-                            Visualizados (<span id="countVisualizado">0</span>)
-                        </button>
                         <button onclick="switchFilter('aceito')" id="tabAceito" class="px-4 py-3 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium text-sm">
                             Aceitos (<span id="countAceito">0</span>)
                         </button>
                         <button onclick="switchFilter('recusado')" id="tabRecusado" class="px-4 py-3 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium text-sm">
                             Recusados (<span id="countRecusado">0</span>)
                         </button>
-                        <button onclick="switchFilter('contratados')" id="tabContratados" class="px-4 py-3 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium text-sm">
+                        <button onclick="switchFilter('contratado')" id="tabContratado" class="px-4 py-3 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium text-sm">
                             Contratados (<span id="countContratados">0</span>)
                         </button>
                     </nav>
                 </div>
             </div>
 
-            <!-- Lista de Candidatos -->
-            <div id="candidatosList"></div>
+            <div id="candidatosList" class="space-y-4">
+                <div class="text-center py-12 text-gray-500">Carregando...</div>
+            </div>
         </div>
     </div>
 
-    <!-- Modal de Avaliação -->
-    <div id="modalAvaliacao"></div>
-
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
-    <script src="scripts/vagas.js"></script>
+    
     <script>
+        // 1. Configuração Inicial
         requireAuth('empresa');
 
         // Variáveis globais
-        let vagaAtual = null;
+        let listaCandidatosGlobal = []; // Armazena os dados que vêm do banco
         let currentFilter = 'todos';
-        let candidatosStatus = {};
-
-        // Carregar modal de avaliação
-        fetch('components/modal-avaliacao.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('modalAvaliacao').innerHTML = html;
-            });
-
-        // Mock de candidatos
-        const mockCandidatos = [
-            {
-                id: '1',
-                nome: 'João Silva',
-                especialidade: 'Pedreiro',
-                experiencia: '8 anos',
-                avaliacao: 4.8,
-                totalAvaliacoes: 65,
-                projetos: 156,
-                telefone: '(11) 99999-1111',
-                email: 'joao.silva@email.com',
-                localizacao: 'São Paulo, SP',
-                distancia: '2.3 km',
-                valorHora: 45,
-                disponibilidade: 'Imediato',
-                mensagem: 'Tenho 8 anos de experiência em construção residencial e posso começar imediatamente.',
-                dataCandidatura: '2024-01-16',
-                status: 'pendente'
-            },
-            {
-                id: '2',
-                nome: 'Carlos Oliveira',
-                especialidade: 'Pedreiro',
-                experiencia: '12 anos',
-                avaliacao: 4.9,
-                totalAvaliacoes: 87,
-                projetos: 203,
-                telefone: '(11) 99999-2222',
-                email: 'carlos.oliveira@email.com',
-                localizacao: 'São Paulo, SP',
-                distancia: '3.1 km',
-                valorHora: 50,
-                disponibilidade: 'Próxima semana',
-                mensagem: 'Especialista em construção civil com vasta experiência.',
-                dataCandidatura: '2024-01-17',
-                status: 'visualizado'
-            },
-            {
-                id: '3',
-                nome: 'Pedro Santos',
-                especialidade: 'Pedreiro',
-                experiencia: '5 anos',
-                avaliacao: 4.6,
-                totalAvaliacoes: 42,
-                projetos: 87,
-                telefone: '(11) 99999-3333',
-                email: 'pedro.santos@email.com',
-                localizacao: 'Guarulhos, SP',
-                distancia: '8.5 km',
-                valorHora: 40,
-                disponibilidade: 'Imediato',
-                mensagem: 'Profissional dedicado com foco em qualidade.',
-                dataCandidatura: '2024-01-18',
-                status: 'aceito'
-            },
-            {
-                id: '4',
-                nome: 'Roberto Alves',
-                especialidade: 'Pedreiro',
-                experiencia: '15 anos',
-                avaliacao: 5.0,
-                totalAvaliacoes: 120,
-                projetos: 280,
-                telefone: '(11) 99999-4444',
-                email: 'roberto.alves@email.com',
-                localizacao: 'São Paulo, SP',
-                distancia: '1.8 km',
-                valorHora: 60,
-                disponibilidade: 'Em 15 dias',
-                mensagem: 'Profissional com excelente histórico.',
-                dataCandidatura: '2024-01-19',
-                status: 'contratado'
-            }
-        ];
 
         // Obter ID da vaga da URL
         const urlParams = new URLSearchParams(window.location.search);
         const vagaId = urlParams.get('id');
 
-        if (vagaId) {
-            vagaAtual = getVagaById(vagaId);
-            if (vagaAtual) {
-                document.getElementById('vagaTitle').textContent = `Candidatos para: ${vagaAtual.titulo}`;
+        if (!vagaId) {
+            alert("Vaga não encontrada.");
+            window.location.href = 'empresa-dashboard.html';
+        }
+
+        // 2. FUNÇÃO PRINCIPAL: BUSCAR DO BANCO
+        async function carregarDados() {
+            const token = JSON.parse(localStorage.getItem('token'));
+            const container = document.getElementById('candidatosList');
+
+            try {
+                // A rota que criamos no server.js
+                const response = await fetch(`${API_URL}/vagas/${vagaId}/candidatos`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const dados = await response.json();
+
+                if (!Array.isArray(dados)) throw new Error("Erro ao buscar dados");
+
+                listaCandidatosGlobal = dados; // Salva na memória para filtrar/ordenar sem ir no server de novo
+
+                // Atualiza título (Se houver candidatos, pega o nome da vaga do primeiro, senão mantém genérico)
+                /* Nota: O ideal seria uma rota só pra pegar detalhes da vaga, mas vamos simplificar */
+                if (dados.length > 0) {
+                    // Como não temos o título da vaga no endpoint de candidatos, deixaremos genérico ou você pode criar uma rota GET /vagas/:id
+                    document.getElementById('vagaTitle').textContent = `Gerenciar Candidatura (ID: ${vagaId})`; 
+                } else {
+                    document.getElementById('vagaTitle').textContent = `Vaga ID: ${vagaId}`;
+                }
+
+                renderCandidatos();
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<p class="text-center text-red-500">Erro ao carregar candidatos.</p>';
             }
         }
 
-        // Alternar filtro
+        // 3. ALTERAR FILTRO (Tabs)
         function switchFilter(filter) {
             currentFilter = filter;
             
-            // Atualizar tabs
-            const tabs = ['todos', 'pendente', 'visualizado', 'aceito', 'recusado', 'contratados'];
+            // Atualiza visual das abas
+            const tabs = ['todos', 'pendente', 'aceito', 'recusado', 'contratado'];
             tabs.forEach(tab => {
                 const btn = document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
                 if (btn) {
@@ -216,204 +153,182 @@
             renderCandidatos();
         }
 
-        // Atualizar status do candidato
-        function atualizarStatus(candidatoId, novoStatus) {
-            candidatosStatus[candidatoId] = novoStatus;
+        // 4. ATUALIZAR STATUS (Envia para o Backend)
+        async function atualizarStatus(candidaturaId, novoStatus) {
+            const token = JSON.parse(localStorage.getItem('token'));
             
             const messages = {
-                'aceito': 'Candidato aceito! Ele será notificado por e-mail.',
-                'recusado': 'Candidato recusado.',
-                'contratado': 'Candidato marcado como contratado!',
-                'contrato-finalizado': 'Contrato finalizado! Agora você pode avaliar o profissional.'
+                'aceito': 'Deseja APROVAR este candidato?',
+                'recusado': 'Deseja REJEITAR este candidato?',
+                'contratado': 'Deseja marcar como CONTRATADO?',
+                'pendente': 'Deseja voltar para pendente?'
             };
-            
-            if (messages[novoStatus]) {
-                showToast(messages[novoStatus]);
+
+            if (!confirm(messages[novoStatus] || 'Confirmar alteração?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/candidaturas/${candidaturaId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status: novoStatus })
+                });
+
+                if (response.ok) {
+                    // Atualiza localmente para não precisar recarregar tudo
+                    const candidato = listaCandidatosGlobal.find(c => c.candidatura_id == candidaturaId);
+                    if (candidato) candidato.status = novoStatus;
+                    
+                    showToast(`Status atualizado para: ${novoStatus.toUpperCase()}`, 'success');
+                    renderCandidatos();
+                } else {
+                    alert('Erro ao atualizar status.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Erro de conexão.');
             }
-            
-            renderCandidatos();
         }
 
-        // Renderizar candidatos
+        // 5. RENDERIZAR NA TELA (Onde a mágica visual acontece)
         function renderCandidatos() {
+            const container = document.getElementById('candidatosList');
             const ordenacao = document.getElementById('ordenacaoSelect').value;
             
-            // Ordenar
-            let candidatos = [...mockCandidatos].sort((a, b) => {
-                switch (ordenacao) {
-                    case 'rating-desc':
-                        return b.avaliacao - a.avaliacao;
-                    case 'rating-asc':
-                        return a.avaliacao - b.avaliacao;
-                    case 'data-desc':
-                        return new Date(b.dataCandidatura).getTime() - new Date(a.dataCandidatura).getTime();
-                    case 'data-asc':
-                        return new Date(a.dataCandidatura).getTime() - new Date(b.dataCandidatura).getTime();
-                    default:
-                        return 0;
-                }
+            // Clona a lista para não estragar a original
+            let candidatosParaExibir = [...listaCandidatosGlobal];
+
+            // A. Ordenação
+            candidatosParaExibir.sort((a, b) => {
+                const dataA = new Date(a.data_candidatura).getTime();
+                const dataB = new Date(b.data_candidatura).getTime();
+                
+                // Nota: Rating é fake por enquanto, então ordenamos por data
+                if (ordenacao === 'data-desc') return dataB - dataA;
+                if (ordenacao === 'data-asc') return dataA - dataB;
+                return 0;
             });
             
-            // Filtrar
-            const filtered = candidatos.filter(c => {
-                const status = candidatosStatus[c.id] || c.status;
-                if (currentFilter === 'todos') return true;
-                if (currentFilter === 'contratados') return status === 'contratado' || status === 'contrato-finalizado';
-                return status === currentFilter;
-            });
-            
-            // Atualizar contadores
-            const contadores = {
-                todos: candidatos.length,
-                pendente: candidatos.filter(c => (candidatosStatus[c.id] || c.status) === 'pendente').length,
-                visualizado: candidatos.filter(c => (candidatosStatus[c.id] || c.status) === 'visualizado').length,
-                aceito: candidatos.filter(c => (candidatosStatus[c.id] || c.status) === 'aceito').length,
-                recusado: candidatos.filter(c => (candidatosStatus[c.id] || c.status) === 'recusado').length,
-                contratados: candidatos.filter(c => ['contratado', 'contrato-finalizado'].includes(candidatosStatus[c.id] || c.status)).length
+            // B. Filtros de Status
+            const stats = {
+                todos: listaCandidatosGlobal.length,
+                pendente: listaCandidatosGlobal.filter(c => c.status === 'pendente').length,
+                aceito: listaCandidatosGlobal.filter(c => c.status === 'aceito').length,
+                recusado: listaCandidatosGlobal.filter(c => c.status === 'rejeitado' || c.status === 'recusado').length,
+                contratado: listaCandidatosGlobal.filter(c => c.status === 'contratado').length
             };
+
+            // Atualiza os números no topo da página
+            document.getElementById('statTotal').textContent = stats.todos;
+            document.getElementById('statPendente').textContent = stats.pendente;
+            document.getElementById('statAceito').textContent = stats.aceito;
+            document.getElementById('statRecusado').textContent = stats.recusado;
+            document.getElementById('statContratado').textContent = stats.contratado;
+
+            document.getElementById('countTodos').textContent = stats.todos;
+            document.getElementById('countPendente').textContent = stats.pendente;
+            document.getElementById('countAceito').textContent = stats.aceito;
+            document.getElementById('countRecusado').textContent = stats.recusado;
+            document.getElementById('countContratados').textContent = stats.contratado;
+
+            // Filtra a lista para exibição
+            if (currentFilter !== 'todos') {
+                // Tratamento especial para "recusado" que no banco pode estar como "rejeitado"
+                if (currentFilter === 'recusado') {
+                    candidatosParaExibir = candidatosParaExibir.filter(c => c.status === 'rejeitado' || c.status === 'recusado');
+                } else {
+                    candidatosParaExibir = candidatosParaExibir.filter(c => c.status === currentFilter);
+                }
+            }
             
-            document.getElementById('statTotal').textContent = contadores.todos;
-            document.getElementById('statPendente').textContent = contadores.pendente;
-            document.getElementById('statVisualizado').textContent = contadores.visualizado;
-            document.getElementById('statAceito').textContent = contadores.aceito;
-            document.getElementById('statRecusado').textContent = contadores.recusado;
-            document.getElementById('statContratado').textContent = contadores.contratados;
-            
-            document.getElementById('countTodos').textContent = contadores.todos;
-            document.getElementById('countPendente').textContent = contadores.pendente;
-            document.getElementById('countVisualizado').textContent = contadores.visualizado;
-            document.getElementById('countAceito').textContent = contadores.aceito;
-            document.getElementById('countRecusado').textContent = contadores.recusado;
-            document.getElementById('countContratados').textContent = contadores.contratados;
-            
-            // Renderizar lista
-            const container = document.getElementById('candidatosList');
-            
-            if (filtered.length === 0) {
+            // C. HTML (Vazio)
+            if (candidatosParaExibir.length === 0) {
                 container.innerHTML = `
-                    <div class="bg-white rounded-lg p-12 text-center">
-                        <i class="fas fa-user text-gray-400 text-6xl mb-4"></i>
-                        <h3 class="text-gray-900 mb-2">Nenhum candidato encontrado</h3>
-                        <p class="text-gray-600">
-                            ${currentFilter === 'todos' ? 'Ainda não há candidatos para esta vaga' : `Não há candidatos com status "${currentFilter}"`}
-                        </p>
+                    <div class="bg-white rounded-lg p-12 text-center border border-gray-200">
+                        <i class="fas fa-users text-gray-300 text-6xl mb-4"></i>
+                        <h3 class="text-gray-900 mb-2">Nenhum candidato nesta categoria</h3>
+                        <p class="text-gray-600">Aguarde novas candidaturas ou mude o filtro.</p>
                     </div>
                 `;
                 return;
             }
             
-            container.innerHTML = filtered.map(c => {
-                const status = candidatosStatus[c.id] || c.status;
-                const isAltamenteQualificado = c.avaliacao >= 4.5;
+            // D. HTML (Lista)
+            container.innerHTML = candidatosParaExibir.map(c => {
+                // Normaliza status para cores
+                const statusNormalizado = c.status === 'rejeitado' ? 'recusado' : c.status;
                 
                 const statusClasses = {
                     'pendente': 'bg-gray-100 text-gray-800',
-                    'visualizado': 'bg-blue-100 text-blue-800',
                     'aceito': 'bg-green-100 text-green-800',
                     'recusado': 'bg-red-100 text-red-800',
-                    'contratado': 'bg-purple-100 text-purple-800',
-                    'contrato-finalizado': 'bg-gray-200 text-gray-900'
+                    'contratado': 'bg-purple-100 text-purple-800'
                 };
-                
-                const statusLabels = {
-                    'pendente': 'Pendente',
-                    'visualizado': 'Visualizado',
-                    'aceito': 'Aceito',
-                    'recusado': 'Recusado',
-                    'contratado': 'Contratado',
-                    'contrato-finalizado': 'Finalizado'
-                };
-                
+
                 return `
-                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
-                        <div class="flex items-start justify-between">
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                            
                             <div class="flex items-start gap-4 flex-1">
-                                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-xl">
-                                    ${c.nome.split(' ').map(n => n[0]).join('')}
+                                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-xl shrink-0">
+                                    ${c.nome_profissional.charAt(0)}
                                 </div>
                                 
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-2 flex-wrap">
-                                        <h3 class="text-lg font-semibold text-gray-900">${c.nome}</h3>
-                                        <span class="px-3 py-1 rounded-full text-sm ${statusClasses[status]}">
-                                            ${statusLabels[status]}
+                                        <h3 class="text-lg font-semibold text-gray-900">${c.nome_profissional}</h3>
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${statusClasses[statusNormalizado] || 'bg-gray-100'}">
+                                            ${statusNormalizado}
                                         </span>
-                                        ${isAltamenteQualificado ? `
-                                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-full text-xs flex items-center gap-1">
-                                                <i class="fas fa-award"></i>
-                                                Altamente Qualificado
-                                            </span>
-                                        ` : ''}
                                     </div>
                                     
-                                    <p class="text-gray-600 mb-2">${c.especialidade}</p>
+                                    <p class="text-gray-600 mb-2 font-medium">${c.especialidade || 'Profissional'} • ${c.experience_years || 0} anos de exp.</p>
                                     
                                     <div class="flex items-center gap-4 text-sm text-gray-600 mb-3 flex-wrap">
-                                        <div class="flex items-center gap-1">
-                                            <i class="fas fa-star text-yellow-400"></i>
-                                            <span class="font-semibold text-gray-900">${c.avaliacao.toFixed(1)}</span>
-                                            <span class="text-gray-500">(${c.totalAvaliacoes} avaliações)</span>
-                                        </div>
-                                        <span>${c.experiencia} de experiência</span>
-                                        <div class="flex items-center gap-1">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            ${c.distancia}
-                                        </div>
+                                        <span><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i> ${c.city || 'Não informado'}</span>
+                                        <span><i class="fas fa-phone text-gray-400 mr-1"></i> ${c.phone}</span>
+                                        <span><i class="fas fa-envelope text-gray-400 mr-1"></i> ${c.email}</span>
                                     </div>
 
-                                    <div class="bg-gray-50 rounded-lg p-3 mb-3">
-                                        <p class="text-sm text-gray-700 mb-1"><strong>Mensagem:</strong></p>
-                                        <p class="text-sm text-gray-600">${c.mensagem}</p>
-                                    </div>
-
-                                    <div class="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
-                                        <div class="flex items-center gap-1">
-                                            <i class="fas fa-phone"></i>
-                                            ${c.telefone}
-                                        </div>
-                                        <div class="flex items-center gap-1">
-                                            <i class="fas fa-envelope"></i>
-                                            ${c.email}
-                                        </div>
-                                        <span>Disponibilidade: ${c.disponibilidade}</span>
+                                    <div class="bg-gray-50 rounded-lg p-3 mb-3 text-sm text-gray-600">
+                                        <p><strong>Data da candidatura:</strong> ${new Date(c.data_candidatura).toLocaleDateString('pt-BR')}</p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="text-right ml-4">
-                                <div class="text-lg font-semibold text-gray-900">R$ ${c.valorHora}/hora</div>
-                                <div class="text-sm text-gray-500 mb-4">
-                                    ${formatDate(c.dataCandidatura)}
-                                </div>
-                                
-                                <div class="flex flex-col gap-2">
-                                    ${status === 'pendente' ? `
-                                        <button onclick="atualizarStatus('${c.id}', 'aceito')" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition text-sm">
-                                            <i class="fas fa-check mr-1"></i> Aceitar
-                                        </button>
-                                        <button onclick="atualizarStatus('${c.id}', 'recusado')" class="px-4 py-2 border border-red-300 text-red-600 hover:bg-red-50 rounded-md transition text-sm">
-                                            <i class="fas fa-times mr-1"></i> Recusar
-                                        </button>
-                                    ` : ''}
-                                    
-                                    ${status === 'aceito' ? `
-                                        <button onclick="atualizarStatus('${c.id}', 'contratado')" class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-md transition text-sm">
-                                            <i class="fas fa-award mr-1"></i> Contratar
-                                        </button>
-                                    ` : ''}
-                                    
-                                    ${status === 'contratado' ? `
-                                        <button onclick="atualizarStatus('${c.id}', 'contrato-finalizado')" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition text-sm">
-                                            <i class="fas fa-flag-checkered mr-1"></i> Finalizar Contrato
-                                        </button>
-                                    ` : ''}
-                                    
-                                    ${status === 'contrato-finalizado' ? `
-                                        <button onclick="abrirModalAvaliacao(${JSON.stringify(c).replace(/"/g, '&quot;')}, ${JSON.stringify(vagaAtual || {titulo: 'Vaga'}).replace(/"/g, '&quot;')})" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition text-sm">
-                                            <i class="fas fa-star mr-1"></i> Avaliar
-                                        </button>
-                                    ` : ''}
-                                </div>
+                            <div class="flex flex-col gap-2 min-w-[150px]">
+                                ${c.status === 'pendente' ? `
+                                    <button onclick="atualizarStatus(${c.candidatura_id}, 'aceito')" class="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition text-sm flex items-center justify-center gap-2">
+                                        <i class="fas fa-check"></i> Aprovar
+                                    </button>
+                                    <button onclick="atualizarStatus(${c.candidatura_id}, 'recusado')" class="w-full px-4 py-2 border border-red-300 text-red-600 hover:bg-red-50 rounded-md transition text-sm flex items-center justify-center gap-2">
+                                        <i class="fas fa-times"></i> Recusar
+                                    </button>
+                                ` : ''}
+
+                                ${c.status === 'aceito' ? `
+                                    <button onclick="atualizarStatus(${c.candidatura_id}, 'contratado')" class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition text-sm flex items-center justify-center gap-2">
+                                        <i class="fas fa-handshake"></i> Contratar
+                                    </button>
+                                    <button onclick="atualizarStatus(${c.candidatura_id}, 'pendente')" class="w-full text-gray-400 text-xs hover:text-gray-600 mt-2">
+                                        Desfazer
+                                    </button>
+                                ` : ''}
+
+                                ${(c.status === 'recusado' || c.status === 'rejeitado') ? `
+                                    <span class="text-red-500 text-sm text-center italic">Candidatura rejeitada</span>
+                                    <button onclick="atualizarStatus(${c.candidatura_id}, 'pendente')" class="w-full text-gray-400 text-xs hover:text-gray-600 mt-1">
+                                        Reconsiderar
+                                    </button>
+                                ` : ''}
+
+                                ${c.status === 'contratado' ? `
+                                    <div class="bg-purple-50 text-purple-700 p-2 rounded text-center text-sm font-bold border border-purple-200">
+                                        <i class="fas fa-check-circle"></i> Contratado
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
@@ -421,11 +336,30 @@
             }).join('');
         }
 
-        // Event listeners
+        // Event listener de ordenação
         document.getElementById('ordenacaoSelect').addEventListener('change', renderCandidatos);
 
-        // Inicializar
-        renderCandidatos();
+        // Função de Toast (Visual)
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 z-50 ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            // Animação de entrada
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 100);
+
+            // Remove depois de 3s
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Start
+        carregarDados();
     </script>
 </body>
 </html>

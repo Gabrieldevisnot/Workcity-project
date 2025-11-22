@@ -24,7 +24,7 @@ const pool = new Pool({
 // --- MIDDLEWARE DE AUTENTICAÇÃO (COM LOGS) ---
 function authenticateToken(req, res, next) {
     console.log("👮‍♂️ Segurança: Verificando crachá...");
-    
+
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -39,7 +39,7 @@ function authenticateToken(req, res, next) {
             console.log("Erro:", err.message); // Vai mostrar o motivo exato
             return res.status(403).json({ message: "Token inválido." });
         }
-        
+
         console.log(`👮‍♂️ Segurança: LIBERADO! Usuário ID: ${user.id}`);
         req.user = user;
         next(); // AQUI É O PASSE LIVRE PARA A ROTA
@@ -70,8 +70,8 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
             WHERE v.status = 'aberta' 
             AND v.id NOT IN (SELECT vaga_id FROM candidaturas WHERE profissional_id = $1)
         `;
-        
-        const values = [profissionalId]; 
+
+        const values = [profissionalId];
         let counter = 2;
 
         if (busca && busca.trim() !== '') {
@@ -81,7 +81,7 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
         }
 
         if (especialidade && especialidade.trim() !== '') {
-            sql += ` AND v.especialidade ILIKE $${counter}`; 
+            sql += ` AND v.especialidade ILIKE $${counter}`;
             values.push(especialidade);
             counter++;
         }
@@ -107,15 +107,12 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
     }
 });
 
-// ... (AQUI VÊM AS OUTRAS ROTAS: cadastro, login, criar vaga, etc.) ...
-// ...
-
 // --- ROTA DE CRIAR VAGA (Protegida pelo authenticateToken) ---
 app.post('/vagas', authenticateToken, async (req, res) => {
-    const { 
-        titulo, especialidade, localizacao, descricao, 
-        salarioMin, salarioMax, tipoContrato, 
-        experienciaMinima, requisitos, beneficios 
+    const {
+        titulo, especialidade, localizacao, descricao,
+        salarioMin, salarioMax, tipoContrato,
+        experienciaMinima, requisitos, beneficios
     } = req.body;
 
     try {
@@ -143,7 +140,7 @@ app.post('/vagas', authenticateToken, async (req, res) => {
 });
 // ROTA DE CADASTRO
 app.post('/auth/register', async (req, res) => {
-    const { 
+    const {
         email, password, userType, telefone, cidade, estado, endereco, // Comuns
         razaoSocial, cnpj, // Empresa
         nome, cpf, especialidade, experiencia // Profissional
@@ -194,12 +191,12 @@ app.post('/auth/login', async (req, res) => {
 
     try {
         const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        
+
         if (result.rows.length === 0) return res.status(400).json({ message: "Usuário não encontrado" });
-        
+
         const user = result.rows[0];
         const validPass = await bcrypt.compare(password, user.password_hash);
-        
+
         if (!validPass) return res.status(400).json({ message: "Senha incorreta" });
 
         const token = jwt.sign({ id: user.id }, 'SEGREDO_WORKCITY', { expiresIn: '1h' });
@@ -211,42 +208,28 @@ app.post('/auth/login', async (req, res) => {
         res.status(500).json({ message: "Erro no login" });
     }
 });
-// ROTA PARA LISTAR VAGAS DA EMPRESA LOGADA
+// ROTA: LISTAR VAGAS DA EMPRESA (COM CONTAGEM DE CANDIDATOS)
 app.get('/minhas-vagas', authenticateToken, async (req, res) => {
     try {
-        // Busca vagas onde o user_id é igual ao ID de quem está logado
-        const result = await pool.query(
-            'SELECT * FROM vagas WHERE user_id = $1 ORDER BY created_at DESC', 
-            [req.user.id]
-        );
+        // A mágica acontece aqui:
+        // 1. COUNT(c.id) conta quantos registros existem na tabela de candidaturas para esta vaga.
+        // 2. LEFT JOIN garante que a vaga apareça mesmo se tiver 0 candidatos.
+        // 3. GROUP BY agrupa os resultados por vaga para fazer a conta certa.
+        const result = await pool.query(`
+            SELECT v.*, COUNT(c.id)::int as total_candidatos
+            FROM vagas v
+            LEFT JOIN candidaturas c ON v.id = c.vaga_id
+            WHERE v.user_id = $1
+            GROUP BY v.id
+            ORDER BY v.created_at DESC
+        `, [req.user.id]);
         
-        res.json(result.rows); // Devolve a lista para o frontend
+        res.json(result.rows); 
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Erro ao buscar vagas" });
     }
 });
-// ROTA PÚBLICA DE VAGAS (FEED)
-// Nota: Usei 'authenticateToken' para garantir que só usuários logados vejam as vagas,
-// mas se quiser que seja público, é só tirar o authenticateToken.
-/*app.get('/vagas/feed', authenticateToken, async (req, res) => {
-    try {
-        // Busca todas as vagas abertas, da mais recente para a mais antiga
-        // Também fazemos um JOIN para trazer o nome da empresa que postou!
-        const result = await pool.query(`
-            SELECT v.*, u.name as nome_empresa 
-            FROM vagas v 
-            JOIN users u ON v.user_id = u.id 
-            WHERE v.status = 'aberta' 
-            ORDER BY v.created_at DESC
-        `);
-        
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Erro ao buscar feed de vagas" });
-    }
-});*/
 // ROTA DO FEED (Filtrada: Não mostra o que eu já apliquei)
 app.get('/vagas/feed', authenticateToken, async (req, res) => {
     try {
@@ -260,7 +243,7 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
             )
             ORDER BY v.created_at DESC
         `, [req.user.id]); // $1 é o ID do profissional logado
-        
+
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -314,6 +297,56 @@ app.delete('/candidaturas/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Erro ao cancelar candidatura." });
     }
 });
+
+// ROTA: LISTAR CANDIDATOS DE UMA VAGA ESPECÍFICA
+app.get('/vagas/:id/candidatos', authenticateToken, async (req, res) => {
+    const vagaId = req.params.id;
+    const empresaId = req.user.id;
+
+    try {
+        // Query inteligente:
+        // 1. Busca os dados do candidato (nome, email, telefone, etc)
+        // 2. Garante que a vaga realmente pertence à empresa que está pedindo (Segurança!)
+        const result = await pool.query(`
+            SELECT 
+                c.id as candidatura_id,
+                c.status,
+                c.data_candidatura,
+                u.name as nome_profissional,
+                u.email,
+                u.phone,
+                u.city,
+                u.specialty as especialidade,
+                u.experience_years
+            FROM candidaturas c
+            JOIN users u ON c.profissional_id = u.id
+            JOIN vagas v ON c.vaga_id = v.id
+            WHERE c.vaga_id = $1 AND v.user_id = $2
+        `, [vagaId, empresaId]);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erro ao buscar candidatos." });
+    }
+});
+
+// ROTA: ALTERAR STATUS DA CANDIDATURA (Aprovar/Rejeitar)
+app.patch('/candidaturas/:id/status', authenticateToken, async (req, res) => {
+    const { status } = req.body; // Recebe 'aprovado' ou 'rejeitado'
+    const candidaturaId = req.params.id;
+
+    try {
+        await pool.query(
+            'UPDATE candidaturas SET status = $1 WHERE id = $2',
+            [status, candidaturaId]
+        );
+        res.json({ message: "Status atualizado com sucesso!" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erro ao atualizar status." });
+    }
+});
 // ROTA DO FEED (DEBUG DE SQL)
 app.get('/vagas/feed', authenticateToken, async (req, res) => {
     const { busca, especialidade, cidade } = req.query;
@@ -328,8 +361,8 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
             WHERE v.status = 'aberta' 
             AND v.id NOT IN (SELECT vaga_id FROM candidaturas WHERE profissional_id = $1)
         `;
-        
-        const values = [profissionalId]; 
+
+        const values = [profissionalId];
         let counter = 2; // Próximo parâmetro será o $2
 
         // 2. Adiciona os filtros se existirem
@@ -340,7 +373,7 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
         }
 
         if (especialidade && especialidade.trim() !== '') {
-            sql += ` AND v.especialidade ILIKE $${counter}`; 
+            sql += ` AND v.especialidade ILIKE $${counter}`;
             values.push(especialidade);
             counter++;
         }
@@ -360,7 +393,7 @@ app.get('/vagas/feed', authenticateToken, async (req, res) => {
         // ---------------------------------
 
         const result = await pool.query(sql, values);
-        
+
         console.log(`Encontradas: ${result.rows.length}`);
         res.json(result.rows);
 
@@ -380,7 +413,7 @@ app.get('/minhas-candidaturas', authenticateToken, async (req, res) => {
             WHERE c.profissional_id = $1
             ORDER BY c.data_candidatura DESC
         `, [req.user.id]);
-        
+
         res.json(result.rows);
     } catch (err) {
         console.error(err);
