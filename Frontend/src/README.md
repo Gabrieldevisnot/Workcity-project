@@ -1,261 +1,160 @@
-# WorkCity - Plataforma de Conexão entre Empresas e Profissionais
-
-## 📋 Sobre o Projeto
-
-WorkCity é uma plataforma web que conecta empresas de engenharia civil com profissionais autônomos qualificados (pedreiros, eletricistas, pintores, encanadores, etc.). O sistema permite que empresas publiquem vagas, gerenciem candidatos e avaliem profissionais, enquanto os profissionais podem buscar oportunidades e gerenciar suas candidaturas.
-
-## 🚀 Tecnologias Utilizadas
-
-- **HTML5** - Estrutura das páginas
-- **JavaScript (ES6+)** - Lógica da aplicação
-- **Tailwind CSS (CDN)** - Estilização responsiva
-- **Font Awesome** - Ícones
-- **LocalStorage** - Persistência de dados
+🏗️ WorkCity - Plataforma de Conexão para Construção Civil
 
-## 📁 Estrutura de Arquivos
+O WorkCity é uma aplicação Full Stack desenvolvida para conectar empresas de construção civil a profissionais qualificados (pedreiros, eletricistas, encanadores, etc.). O sistema facilita o recrutamento ativo e passivo através de um dashboard intuitivo.
 
-```
-/projeto-workcity
-├── index.html                    # Landing Page principal
-├── login-profissional.html       # Login de profissionais
-├── login-empresa.html            # Login de empresas
-├── cadastro-profissional.html    # Cadastro de profissionais
-├── cadastro-empresa.html         # Cadastro de empresas
-├── dashboard.html                # Dashboard do profissional
-├── empresa-dashboard.html        # Dashboard da empresa
-├── criar-vaga.html               # Formulário de criação de vagas
-├── gerenciar-candidatos.html     # Gerenciamento de candidatos por vaga
-├── scripts/
-│   ├── auth.js                   # Autenticação e gerenciamento de sessão
-│   ├── main.js                   # Funções utilitárias globais
-│   └── vagas.js                  # Lógica de vagas e avaliações
-└── components/
-    └── modal-avaliacao.html      # Modal de avaliação de profissionais
-```
+🚀 Funcionalidades Principais
 
-## 🎯 Funcionalidades Principais
+🏢 Para Empresas
 
-### Para Empresas
-
-1. **Gestão de Múltiplas Vagas**
-   - Criar vagas ilimitadas com IDs únicos
-   - Visualizar lista de todas as vagas publicadas
-   - Acompanhar status (Ativa, Pausada, Fechada)
-   - Contador de candidaturas por vaga
+Gestão de Vagas: Criar, visualizar e gerenciar vagas de emprego com localização padronizada.
 
-2. **Sistema de Avaliação de Profissionais**
-   - Avaliar profissionais com 1 a 5 estrelas
-   - Comentário obrigatório (mínimo 50 caracteres)
-   - Cálculo automático da média de avaliações
-   - Avaliações públicas no perfil do profissional
-
-3. **Busca e Priorização de Profissionais**
-   - Busca por nome e especialidade
-   - Filtros por especialidade e localização
-   - Ordenação por rating, experiência, projetos e valor
-   - Badge "Altamente Qualificado" para profissionais com rating ≥ 4.5
+Gestão de Candidatos: Visualizar interessados, aprovar ou rejeitar candidaturas.
 
-4. **Gerenciamento de Candidatos**
-   - Visualizar candidatos por vaga
-   - Fluxo completo: Pendente → Aceito → Contratado → Finalizado → Avaliar
-   - Ordenação inteligente por rating ou data
-   - Destaque visual para profissionais qualificados
+Recrutamento Ativo: Buscar profissionais por localização/especialidade e enviar convites diretos.
 
-### Para Profissionais
+Dashboard: Estatísticas em tempo real de vagas e candidatos.
 
-1. **Busca de Vagas**
-   - Visualizar vagas disponíveis
-   - Filtros por especialidade e localização
-   - Candidatura a vagas de interesse
+👷 Para Profissionais
 
-2. **Gerenciamento de Candidaturas**
-   - Acompanhar status das candidaturas
-   - Visualizar histórico
+Feed de Oportunidades: Busca avançada de vagas com filtros inteligentes (IBGE).
 
-3. **Perfil Profissional**
-   - Rating público baseado em avaliações
-   - Histórico de projetos
-   - Certificações
+Candidatura: Aplicação rápida para vagas de interesse.
 
-## 🔧 Como Usar
+Gestão de Propostas: Receber e aceitar/recusar convites de empresas.
 
-### Opção 1: VS Code com Live Server
+Perfil Profissional: Edição completa de dados pessoais, experiência, bio e foto.
 
-1. Instale a extensão "Live Server" no VS Code
-2. Abra a pasta do projeto no VS Code
-3. Clique com botão direito em `index.html`
-4. Selecione "Open with Live Server"
-5. A aplicação abrirá em `http://localhost:5500` (ou porta disponível)
+Status: Acompanhamento em tempo real do status das candidaturas.
 
-### Opção 2: Localhost com Python
+🛠️ Tecnologias Utilizadas
 
-```bash
-# Python 3
-python -m http.server 8000
+Frontend: HTML5, Tailwind CSS (CDN), JavaScript Vanilla (ES6+).
 
-# Python 2
-python -m SimpleHTTPServer 8000
-```
+Backend: Node.js, Express.js.
 
-Acesse: `http://localhost:8000`
+Banco de Dados: PostgreSQL.
 
-### Opção 3: Localhost com Node.js
+ORM: Prisma (Gestão de Schema, Migrations e Queries).
 
-```bash
-npx http-server -p 8000
-```
+Autenticação: JWT (JSON Web Token) e Bcrypt.js.
 
-Acesse: `http://localhost:8000`
+Integrações: API de Localidades do IBGE (Estados e Municípios).
 
-### Opção 4: Abrir diretamente no navegador
+📋 Pré-requisitos
 
-Simplesmente abra o arquivo `index.html` no seu navegador preferido.
+Para rodar este projeto localmente, você precisará de:
 
-## 👤 Fluxo de Uso
+Node.js (v18 ou superior recomendado)
 
-### Empresa
+PostgreSQL (instalado e rodando)
 
-1. **Cadastro/Login**
-   - Acesse `login-empresa.html`
-   - Faça login ou cadastre-se
-   - Email de teste: `empresa@test.com` | Senha: `123456`
+Git
 
-2. **Criar Vaga**
-   - No dashboard, clique em "Criar Nova Vaga"
-   - Preencha os dados da vaga
-   - Publique a vaga
+VS Code (recomendado)
 
-3. **Gerenciar Candidatos**
-   - Visualize candidatos por vaga
-   - Aceite/Recuse candidaturas
-   - Contrate profissionais
-   - Finalize contratos
-   - Avalie o desempenho
+Extensão "Prisma" no VS Code (opcional, mas ajuda na leitura do schema)
 
-4. **Buscar Profissionais**
-   - Aba "Buscar Profissionais"
-   - Use filtros de especialidade e ordenação
-   - Profissionais com rating ≥ 4.5 têm badge especial
+⚙️ Instalação e Configuração
 
-### Profissional
+Siga os passos abaixo para configurar o ambiente de desenvolvimento.
 
-1. **Cadastro/Login**
-   - Acesse `login-profissional.html`
-   - Faça login ou cadastre-se
-   - Email de teste: `profissional@test.com` | Senha: `123456`
+1. Clonar o Repositório
 
-2. **Buscar Vagas**
-   - Visualize vagas disponíveis
-   - Filtre por especialidade
-   - Candidate-se às vagas
+git clone [https://github.com/Gabrieldevisnot/Workcity-project.git](https://github.com/Gabrieldevisnot/Workcity-project.git)
+cd workcity-app
 
-3. **Acompanhar Candidaturas**
-   - Verifique status das candidaturas
-   - Visualize mensagens das empresas
 
-## 💾 Dados de Teste
+2. Configurar o Backend e Banco de Dados
 
-O sistema já vem com dados mockados para facilitar os testes:
+A configuração do banco agora é feita automaticamente pelo Prisma.
 
-- **7 Profissionais** pré-cadastrados com ratings variados
-- **Candidatos mockados** para demonstração
-- **Sistema de avaliações** totalmente funcional
+Acesse a pasta do backend:
 
-## 🔒 Sistema de Autenticação
+cd backend
 
-- Baseado em `localStorage`
-- Proteção de rotas por tipo de usuário
-- Sessão persistente
-- Logout funcional
 
-## ⚡ Funcionalidades Técnicas
+Instale as dependências:
 
-### Storage (LocalStorage)
+npm install
 
-```javascript
-// Chaves de armazenamento
-workcity_user_type      // 'empresa' ou 'profissional'
-workcity_user_data      // Dados do usuário logado
-workcity_vagas          // Lista de vagas criadas
-workcity_avaliacoes     // Lista de avaliações
-workcity_profissionais  // Lista de profissionais
-```
 
-### Sistema de Avaliação
+Configurar Variáveis de Ambiente:
 
-**Cálculo da Média:**
-```
-Nota Final = Soma de todas as estrelas / Quantidade total de avaliações
-```
-- Resultado arredondado para 1 casa decimal
-- Exibido no perfil público do profissional
-- Usado para ordenação e destaque
+Crie um arquivo chamado .env dentro da pasta backend (se não existir).
 
-**Validações:**
-- Rating: 1-5 estrelas (obrigatório)
-- Comentário: mínimo 50 caracteres (obrigatório)
-- Formulário com validação em tempo real
+Adicione a seguinte linha, substituindo SUA_SENHA pela senha do seu PostgreSQL local:
 
-### Filtros e Ordenação
+DATABASE_URL="postgres://postgres:SUA_SENHA@localhost:5432/workcity_db?schema=public"
 
-**Profissionais:**
-- Maior/Menor Avaliação
-- Mais Experiência
-- Mais Projetos
-- Menor/Maior Valor
 
-**Candidatos:**
-- Maior/Menor Avaliação (padrão)
-- Data Mais Recente/Antiga
+(Nota: Se seu usuário do Postgres não for 'postgres', altere também).
 
-## 🎨 Design e Responsividade
+Criar o Banco de Dados (Migrations):
+Não é necessário criar tabelas manualmente no pgAdmin. O Prisma fará isso por você com base no código. Rode:
 
-- Design responsivo para desktop, tablet e mobile
-- Cores da marca: Laranja (#F97316) e tons de cinza
-- Ícones do Font Awesome
-- Animações suaves com Tailwind
+npx prisma migrate dev
 
-## 📱 Navegação
 
-- Hash-based routing (multipáginas HTML)
-- Botões de navegação contextuais
-- Breadcrumbs visuais
-- Proteção de rotas por autenticação
+Isso criará o banco workcity_db, todas as tabelas e relacionamentos automaticamente.
 
-## 🔄 Melhorias Futuras
+Iniciar o Servidor:
 
-- [ ] Integração com backend real (API REST)
-- [ ] Sistema de notificações em tempo real
-- [ ] Chat entre empresa e profissional
-- [ ] Upload de portfólio e certificados
-- [ ] Sistema de pagamentos
-- [ ] Geolocalização para matching
-- [ ] Aplicativo mobile (PWA)
+node server.js
 
-## 🐛 Solução de Problemas
 
-### LocalStorage não funciona
-- Certifique-se de estar usando HTTP/HTTPS (não file://)
-- Verifique se o navegador permite localStorage
+(Deve aparecer: Servidor rodando na porta 3000)
 
-### Estilos não carregam
-- Verifique conexão com internet (Tailwind CDN)
-- Limpe cache do navegador
+3. Rodar o Frontend
 
-### Dados não persistem
-- Verifique console do navegador (F12)
-- Limpe localStorage e recarregue
+O Frontend deve ser servido através de um servidor local para evitar erros de CORS e permitir o funcionamento correto dos módulos.
 
-## 📄 Licença
+Opção A (VS Code - Recomendada):
 
-Este projeto é de código aberto para fins educacionais.
+Instale a extensão "Live Server" no VS Code.
 
-## 👥 Contato
+Abra a pasta frontend no VS Code.
 
-WorkCity - Conectando talentos da construção civil
-Email: contato@workcity.com.br
-Telefone: (11) 3333-3333
+Abra o arquivo index.html (ou login).
 
----
+Clique em "Go Live" no canto inferior direito do VS Code.
 
-**Desenvolvido com ❤️ para revolucionar o setor de construção civil**
+Opção B (Via Terminal com Python):
+Se tiver Python instalado:
+
+cd frontend
+python -m http.server 5500
+
+
+Acesse no navegador: http://127.0.0.1:5500
+
+🧪 Como Testar o Fluxo Completo
+
+Cadastro Empresa: Crie uma conta de empresa e publique uma vaga (teste o seletor de cidades do IBGE).
+
+Cadastro Profissional: Em aba anônima, cadastre um profissional e edite seu perfil na aba "Meu Perfil".
+
+Candidatura: No dashboard do profissional, busque a vaga e candidate-se.
+
+Gestão: Volte ao dashboard da empresa, clique na vaga e aprove o candidato.
+
+Recrutamento: Como empresa, vá em "Buscar Talentos", encontre o profissional e envie um convite.
+
+Aceite: Como profissional, vá na aba "Propostas", veja o convite e clique em aceitar.
+
+📁 Estrutura do Projeto
+
+workcity-app/
+├── backend/            # API Node.js
+│   ├── prisma/         # Configuração do Prisma (Schema e Migrations)
+│   ├── node_modules/   # Dependências instaladas
+│   ├── server.js       # Lógica do servidor e todas as rotas
+│   └── package.json    # Lista de pacotes
+│
+├── frontend/           # Interface do Usuário
+│   ├── scripts/        # Lógica JS (auth.js, main.js, ibge.js, etc.)
+│   ├── *.html          # Páginas (dashboards, login, cadastro, busca)
+│   └── ...
+└── README.md           # Documentação do projeto
+
+
+Desenvolvido com 🧡 por [Seu Nome]
