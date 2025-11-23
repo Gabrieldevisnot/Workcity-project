@@ -8,126 +8,323 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-50">
-    <header class="bg-white border-b border-gray-200 px-4 py-3">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <button onclick="navigateToHome()">
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-building text-orange-500 text-3xl"></i>
                         <div>
-                            <h3 class="text-xl font-bold">WorkCity</h3>
-                            <p class="text-sm text-gray-400">Profissional</p>
+                            <h3 class="text-xl font-bold text-gray-900">WorkCity</h3>
+                            <p class="text-sm text-gray-500">Área do Profissional</p>
                         </div>
                     </div>
                 </button>
             </div>
-            <div id="headerActions" class="flex items-center space-x-3"></div>
+            
+            <div id="headerActions" class="flex items-center space-x-3">
+                <!-- Será preenchido pelo auth.js -->
+            </div>
         </div>
     </header>
 
-    <main class="min-h-screen py-8">
-        <div class="max-w-7xl mx-auto px-4">
+    <!-- Main Content -->
+    <main class="min-h-screen py-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Boas-vindas -->
             <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-                <p class="text-gray-600">Gerencie suas oportunidades.</p>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Painel de Oportunidades</h1>
+                <p class="text-gray-600">Gerencie suas candidaturas e receba propostas de empresas.</p>
             </div>
 
+            <!-- Cards de Estatísticas -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-                    <div class="text-2xl font-bold text-orange-500" id="statsVagasDisponiveis">...</div>
-                    <div class="text-sm text-gray-600">Vagas Novas</div>
+                <!-- Vagas -->
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-orange-500">
+                    <div class="text-3xl font-bold text-orange-500" id="statsVagasDisponiveis">...</div>
+                    <div class="text-sm text-gray-600 font-medium">Vagas no Feed</div>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center border-2 border-purple-100">
-                    <div class="text-2xl font-bold text-purple-600" id="statsPropostas">0</div>
-                    <div class="text-sm text-gray-600">Propostas Recebidas</div>
+                
+                <!-- Propostas -->
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-purple-500 relative">
+                    <div class="text-3xl font-bold text-purple-600" id="statsPropostas">0</div>
+                    <div class="text-sm text-gray-600 font-medium">Propostas Recebidas</div>
+                    <span id="badgePropostas" class="absolute top-2 right-2 h-3 w-3 bg-red-500 rounded-full hidden"></span>
+                </div>
+
+                <!-- Candidaturas -->
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-blue-500">
+                    <div class="text-3xl font-bold text-blue-500" id="statsCandidaturas">...</div>
+                    <div class="text-sm text-gray-600 font-medium">Minhas Candidaturas</div>
+                </div>
+                
+                <!-- Avaliação (Placeholder) -->
+                <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-yellow-400">
+                    <div class="text-3xl font-bold text-yellow-500">5.0 <span class="text-sm">⭐</span></div>
+                    <div class="text-sm text-gray-600 font-medium">Sua Reputação</div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-sm">
-                <div class="border-b border-gray-200">
-                    <nav class="flex -mb-px">
-                        <button onclick="switchTab('vagas')" id="tabVagas" class="px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium">
-                            Buscar Vagas
-                        </button>
-                        <button onclick="switchTab('propostas')" id="tabPropostas" class="px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2">
-                            Propostas <span class="bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded-full hidden" id="badgePropostas">New</span>
-                        </button>
-                        <button onclick="switchTab('candidaturas')" id="tabCandidaturas" class="px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium">
-                            Minhas Candidaturas
-                        </button>
-                        <button onclick="switchTab('perfil')" id="tabPerfil" class="px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium">
-                            Meu Perfil
-                        </button>
-                    </nav>
-                </div>
+            <!-- Navegação de Abas -->
+            <div class="bg-white rounded-t-lg shadow-sm border-b border-gray-200">
+                <nav class="flex -mb-px overflow-x-auto">
+                    <button onclick="switchTab('vagas')" id="tabVagas" class="whitespace-nowrap px-6 py-4 border-b-2 border-orange-500 text-orange-600 font-bold text-sm transition-colors">
+                        <i class="fas fa-search mr-2"></i> Buscar Vagas
+                    </button>
+                    <button onclick="switchTab('propostas')" id="tabPropostas" class="whitespace-nowrap px-6 py-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm transition-colors">
+                        <i class="fas fa-envelope-open-text mr-2"></i> Propostas
+                    </button>
+                    <button onclick="switchTab('candidaturas')" id="tabCandidaturas" class="whitespace-nowrap px-6 py-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm transition-colors">
+                        <i class="fas fa-briefcase mr-2"></i> Minhas Candidaturas
+                    </button>
+                    <button onclick="switchTab('perfil')" id="tabPerfil" class="whitespace-nowrap px-6 py-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm transition-colors">
+                        <i class="fas fa-user-circle mr-2"></i> Meu Perfil
+                    </button>
+                </nav>
+            </div>
 
+            <!-- CONTEÚDO DAS ABAS -->
+            <div class="bg-white rounded-b-lg shadow-sm min-h-[400px]">
+                
+                <!-- 1. ABA: BUSCAR VAGAS -->
                 <div id="contentVagas" class="p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Vagas Disponíveis</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <input type="text" id="filtroBusca" oninput="carregarFeed()" placeholder="Buscar por título..." class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                        <select id="filtroEspecialidade" onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                            <option value="">Todas as especialidades</option>
-                            <option value="pedreiro">Pedreiro</option>
-                            <option value="eletricista">Eletricista</option>
-                        </select>
-                        <div class="flex gap-2">
-                            <select id="filtroUF" class="w-24 px-2 py-2 border border-gray-300 rounded-md" onchange="carregarCidades('filtroUF', 'listaCidades', 'filtroCidade')"><option value="">UF</option></select>
-                            <div class="flex-1 relative">
-                                <input type="text" id="filtroCidade" list="listaCidades" placeholder="Cidade..." disabled onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
-                                <datalist id="listaCidades"></datalist>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Filtrar Oportunidades</h2>
+                    
+                    <!-- Filtros -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <!-- Busca Texto -->
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Palavra-chave</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="filtroBusca" oninput="carregarFeed()" placeholder="Título ou empresa..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Especialidade -->
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Especialidade</label>
+                            <select id="filtroEspecialidade" onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white">
+                                <option value="">Todas</option>
+                                <option value="pedreiro">Pedreiro</option>
+                                <option value="eletricista">Eletricista</option>
+                                <option value="pintor">Pintor</option>
+                                <option value="encanador">Encanador</option>
+                                <option value="carpinteiro">Carpinteiro</option>
+                                <option value="serralheiro">Serralheiro</option>
+                            </select>
+                        </div>
+
+                        <!-- Localização (IBGE) -->
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Localização</label>
+                            <div class="flex gap-2">
+                                <select id="filtroUF" class="w-20 px-2 py-2 border border-gray-300 rounded-md text-center font-bold text-gray-700 focus:ring-2 focus:ring-orange-500" onchange="carregarCidades('filtroUF', 'listaCidadesBusca', 'filtroCidade')">
+                                    <option value="">UF</option>
+                                </select>
+                                <div class="flex-1 relative">
+                                    <input 
+                                        type="text" 
+                                        id="filtroCidade" 
+                                        list="listaCidadesBusca" 
+                                        placeholder="Cidade..." 
+                                        disabled
+                                        onchange="carregarFeed()" 
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white disabled:bg-gray-100 focus:ring-2 focus:ring-orange-500 outline-none"
+                                    >
+                                    <datalist id="listaCidadesBusca"></datalist>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div id="feedVagas" class="space-y-4"><div class="text-center text-gray-500">Carregando...</div></div>
+
+                    <!-- Lista de Vagas -->
+                    <div id="feedVagas" class="space-y-4">
+                        <div class="text-center py-12 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
+                            <p>Carregando vagas...</p>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- 2. ABA: PROPOSTAS -->
                 <div id="contentPropostas" class="p-6 hidden">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Propostas Recebidas</h2>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Propostas de Trabalho</h2>
                     <div id="listaPropostas" class="space-y-4">
-                        <div class="text-center py-8 text-gray-500">Carregando propostas...</div>
+                        <!-- Preenchido via JS -->
                     </div>
                 </div>
 
+                <!-- 3. ABA: MINHAS CANDIDATURAS -->
                 <div id="contentCandidaturas" class="p-6 hidden">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Histórico de Candidaturas</h2>
+                    <div id="listaCandidaturas" class="space-y-4">
+                        <!-- Preenchido via JS -->
                     </div>
-
-                <div id="contentPerfil" class="p-6 hidden">
-                    <h2 class="text-xl font-semibold text-gray-900">Meu Perfil</h2>
-                    <p class="text-gray-500 mt-4">Em desenvolvimento.</p>
                 </div>
+
+                <!-- 4. ABA: MEU PERFIL -->
+                <div id="contentPerfil" class="p-6 hidden text-center py-12">
+                    <div class="bg-gray-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4 text-gray-300 text-4xl">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Perfil do Profissional</h3>
+                    <p class="text-gray-500 mb-6">Edite suas informações, foto e especialidades.</p>
+                    <button class="px-6 py-2 bg-gray-200 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                        Funcionalidade em Desenvolvimento
+                    </button>
+                </div>
+
             </div>
         </div>
     </main>
 
+    <!-- Scripts Essenciais -->
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/ibge.js"></script>
-    
+
     <script>
+        // --- INICIALIZAÇÃO ---
         requireAuth('profissional');
         updateHeaderForLoggedUser();
 
-        // NAVEGAÇÃO DE ABAS
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarEstados('filtroUF'); // Inicia filtro IBGE
+            carregarFeed();              // Carrega lista inicial
+            carregarPropostas();         // Verifica convites
+            carregarMinhasCandidaturas();// Verifica candidaturas para estatísticas
+        });
+
+        // --- NAVEGAÇÃO (TABS) ---
         function switchTab(tab) {
-            ['vagas', 'propostas', 'candidaturas', 'perfil'].forEach(t => {
+            const tabs = ['vagas', 'propostas', 'candidaturas', 'perfil'];
+            
+            tabs.forEach(t => {
                 const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
                 const content = document.getElementById(`content${t.charAt(0).toUpperCase() + t.slice(1)}`);
                 
                 if (t === tab) {
-                    btn.className = 'px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium';
+                    btn.className = 'whitespace-nowrap px-6 py-4 border-b-2 border-orange-500 text-orange-600 font-bold text-sm transition-colors';
                     content.classList.remove('hidden');
                     
-                    if (tab === 'vagas') carregarFeed();
-                    if (tab === 'candidaturas') carregarMinhasCandidaturas();
-                    if (tab === 'propostas') carregarPropostas();
+                    // Recarrega dados ao entrar na aba
+                    if(tab === 'vagas') carregarFeed();
+                    if(tab === 'propostas') carregarPropostas();
+                    if(tab === 'candidaturas') carregarMinhasCandidaturas();
                 } else {
-                    btn.className = 'px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium flex items-center gap-2';
+                    btn.className = 'whitespace-nowrap px-6 py-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm transition-colors';
                     content.classList.add('hidden');
                 }
             });
         }
 
-        // --- LÓGICA DAS PROPOSTAS (NOVO) ---
+        // --- FUNÇÕES AUXILIARES DE DATA E MOEDA ---
+        function formatarData(dataISO) {
+            if (!dataISO) return 'Data n/d';
+            const data = new Date(dataISO);
+            const hoje = new Date();
+            const diffDias = Math.floor((hoje - data) / (1000 * 60 * 60 * 24));
+            
+            if (diffDias === 0) return 'Hoje';
+            if (diffDias === 1) return 'Ontem';
+            if (diffDias < 7) return `${diffDias} dias atrás`;
+            return data.toLocaleDateString('pt-BR');
+        }
+
+        function formatarSalario(min, max) {
+            if (!min) return 'A combinar';
+            const format = (v) => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+            if (min && !max) return `A partir de ${format(min)}`;
+            return `${format(min)} - ${format(max)}`;
+        }
+
+        // --- 1. CARREGAR FEED DE VAGAS ---
+        async function carregarFeed() {
+            const container = document.getElementById('feedVagas');
+            const token = JSON.parse(localStorage.getItem('token'));
+
+            // Filtros
+            const busca = document.getElementById('filtroBusca').value;
+            const especialidade = document.getElementById('filtroEspecialidade').value;
+            const cidade = document.getElementById('filtroCidade').value;
+
+            const params = new URLSearchParams();
+            if (busca) params.append('busca', busca);
+            if (especialidade) params.append('especialidade', especialidade);
+            if (cidade) params.append('cidade', cidade);
+
+            try {
+                const response = await fetch(`${API_URL}/vagas/feed?${params.toString()}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const vagas = await response.json();
+
+                // Proteção contra erro de servidor
+                if (!Array.isArray(vagas)) {
+                    throw new Error("Resposta inválida do servidor");
+                }
+
+                document.getElementById('statsVagasDisponiveis').textContent = vagas.length;
+
+                if (vagas.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-16 bg-white rounded-lg border border-gray-100">
+                            <div class="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-search text-gray-300 text-3xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Nenhuma vaga encontrada</h3>
+                            <p class="text-gray-500 text-sm mt-2">Tente ajustar os filtros ou volte mais tarde.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = vagas.map(vaga => `
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-300 group relative">
+                        <div class="flex flex-col md:flex-row justify-between gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">${vaga.titulo}</h3>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded font-bold uppercase tracking-wide">Nova</span>
+                                </div>
+                                <p class="text-gray-600 font-medium mb-4 flex items-center gap-2">
+                                    <i class="fas fa-building text-gray-400"></i> ${vaga.nome_empresa}
+                                </p>
+                                
+                                <div class="flex flex-wrap gap-y-2 gap-x-6 text-sm text-gray-500 mb-4">
+                                    <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-orange-500"></i> ${vaga.localizacao}</span>
+                                    <span class="flex items-center gap-1"><i class="fas fa-tools text-orange-500"></i> ${vaga.especialidade || 'Geral'}</span>
+                                    <span class="flex items-center gap-1 font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded"><i class="fas fa-wallet mr-1"></i> ${formatarSalario(vaga.salario_min, vaga.salario_max)}</span>
+                                </div>
+                                
+                                <p class="text-gray-600 text-sm line-clamp-2 leading-relaxed mb-4 bg-gray-50 p-3 rounded border border-gray-100">
+                                    ${vaga.descricao}
+                                </p>
+                            </div>
+                            
+                            <div class="flex items-center md:items-start">
+                                <button onclick="candidatar(${vaga.id})" class="w-full md:w-auto px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition shadow-sm hover:shadow flex items-center justify-center gap-2 whitespace-nowrap">
+                                    Candidatar-se <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 text-xs text-gray-400 font-medium">
+                            ${formatarData(vaga.created_at)}
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<div class="text-center text-red-500 py-8 bg-red-50 rounded border border-red-100">Erro ao carregar vagas. Verifique sua conexão.</div>`;
+            }
+        }
+
+        // --- 2. CARREGAR PROPOSTAS ---
         async function carregarPropostas() {
             const container = document.getElementById('listaPropostas');
             const token = JSON.parse(localStorage.getItem('token'));
@@ -138,54 +335,52 @@
                 });
                 const propostas = await response.json();
 
-                // Atualiza contador
-                document.getElementById('statsPropostas').textContent = propostas.filter(p => p.status === 'enviado').length;
+                const pendentes = propostas.filter(p => p.status === 'enviado').length;
+                document.getElementById('statsPropostas').textContent = pendentes;
+                
+                // Badge de notificação
+                const badge = document.getElementById('badgePropostas');
+                if(pendentes > 0) {
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
 
                 if (propostas.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-center py-12 bg-purple-50 rounded-lg border border-purple-100">
-                            <i class="fas fa-envelope-open text-purple-300 text-5xl mb-4"></i>
-                            <h3 class="text-gray-900 font-medium">Nenhuma proposta ainda</h3>
-                            <p class="text-gray-500">Mantenha seu perfil atualizado para ser encontrado.</p>
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="text-center py-12 text-gray-500">Nenhuma proposta recebida.</div>`;
                     return;
                 }
 
                 container.innerHTML = propostas.map(p => {
-                    // Define visual baseado no status
                     const isPendente = p.status === 'enviado';
-                    let statusBadge = '';
-                    if(p.status === 'aceito') statusBadge = '<span class="text-green-600 font-bold bg-green-100 px-3 py-1 rounded-full text-xs">ACEITO</span>';
-                    if(p.status === 'recusado') statusBadge = '<span class="text-red-600 font-bold bg-red-100 px-3 py-1 rounded-full text-xs">RECUSADO</span>';
+                    let statusHtml = '';
+                    if (p.status === 'aceito') statusHtml = '<span class="text-green-600 bg-green-100 px-3 py-1 rounded-full text-xs font-bold">ACEITO</span>';
+                    if (p.status === 'recusado') statusHtml = '<span class="text-red-600 bg-red-100 px-3 py-1 rounded-full text-xs font-bold">RECUSADO</span>';
 
                     return `
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow ${isPendente ? 'border-l-4 border-l-purple-500' : 'opacity-75'}">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm ${isPendente ? 'border-l-4 border-l-purple-500' : 'opacity-70'}">
                             <div class="flex flex-col md:flex-row justify-between gap-4">
                                 <div class="flex-1">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <h3 class="text-lg font-bold text-gray-900">Convite: ${p.titulo_vaga}</h3>
-                                        ${statusBadge}
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="text-purple-600 bg-purple-50 p-2 rounded-md"><i class="fas fa-handshake"></i></span>
+                                        <h3 class="text-lg font-bold text-gray-900">Convite para: ${p.titulo_vaga}</h3>
+                                        ${statusHtml}
                                     </div>
-                                    <p class="text-orange-600 font-medium mb-2"><i class="fas fa-building mr-1"></i> ${p.nome_empresa}</p>
+                                    <p class="text-gray-600 mb-3 pl-11">Empresa: <strong>${p.nome_empresa}</strong></p>
                                     
-                                    <div class="bg-gray-50 p-3 rounded-md text-gray-600 text-sm mb-3">
-                                        <i class="fas fa-quote-left text-gray-300 mr-2"></i>
-                                        ${p.mensagem || 'Olá! Gostamos do seu perfil e gostaríamos de te convidar para esta vaga.'}
-                                    </div>
-                                    
-                                    <div class="text-xs text-gray-400">
-                                        Recebido em ${new Date(p.created_at).toLocaleDateString()}
+                                    <div class="bg-purple-50 p-4 rounded-lg text-gray-700 text-sm mb-3 ml-11 border border-purple-100 relative">
+                                        <i class="fas fa-quote-left text-purple-200 absolute top-2 left-2"></i>
+                                        <p class="pl-4 italic">"${p.mensagem || 'Olá! Gostamos do seu perfil.'}"</p>
                                     </div>
                                 </div>
-
+                                
                                 ${isPendente ? `
-                                    <div class="flex flex-col gap-2 min-w-[140px] justify-center">
-                                        <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'aceito')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition shadow-sm">
-                                            Aceitar
+                                    <div class="flex flex-row md:flex-col gap-2 justify-center min-w-[140px]">
+                                        <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'aceito')" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow-sm text-sm font-medium transition">
+                                            <i class="fas fa-check mr-1"></i> Aceitar
                                         </button>
-                                        <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'recusado')" class="px-4 py-2 border border-gray-300 text-gray-600 hover:bg-gray-50 rounded-md transition">
-                                            Recusar
+                                        <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'recusado')" class="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded text-sm font-medium transition">
+                                            <i class="fas fa-times mr-1"></i> Recusar
                                         </button>
                                     </div>
                                 ` : ''}
@@ -196,87 +391,139 @@
 
             } catch (error) {
                 console.error(error);
-                container.innerHTML = '<p class="text-red-500 text-center">Erro ao carregar propostas.</p>';
             }
         }
 
-        // --- RESPONDER PROPOSTA ---
-        async function responderProposta(conviteId, vagaId, resposta) {
+        // --- 3. CARREGAR CANDIDATURAS ---
+        async function carregarMinhasCandidaturas() {
+            const container = document.getElementById('listaCandidaturas');
             const token = JSON.parse(localStorage.getItem('token'));
-            const acao = resposta === 'aceito' ? 'ACEITAR' : 'RECUSAR';
-            
-            if(!confirm(`Tem certeza que deseja ${acao} esta proposta?`)) return;
 
             try {
-                const response = await fetch(`${API_URL}/convites/${conviteId}/responder`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ status: resposta, vagaId: vagaId })
+                const response = await fetch(`${API_URL}/minhas-candidaturas`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
+                const candidaturas = await response.json();
 
-                if(response.ok) {
-                    alert(resposta === 'aceito' ? 
-                        "Proposta Aceita! 🎉\nVocê agora é um candidato oficial para esta vaga." : 
-                        "Proposta recusada."
-                    );
-                    carregarPropostas(); // Atualiza a lista
-                } else {
-                    alert("Erro ao responder.");
+                document.getElementById('statsCandidaturas').textContent = candidaturas.length;
+
+                if (candidaturas.length === 0) {
+                    container.innerHTML = `<div class="text-center py-12 text-gray-500">Você ainda não se candidatou.</div>`;
+                    return;
                 }
+
+                container.innerHTML = candidaturas.map(c => {
+                    // Mapeamento de Status
+                    const statusMap = {
+                        'pendente': { label: 'Enviada', color: 'bg-blue-100 text-blue-800', icon: 'fa-paper-plane' },
+                        'aceito': { label: 'Aprovado', color: 'bg-green-100 text-green-800', icon: 'fa-check' },
+                        'recusado': { label: 'Não Selecionado', color: 'bg-red-100 text-red-800', icon: 'fa-times' },
+                        'contratado': { label: 'Contratado', color: 'bg-purple-100 text-purple-800', icon: 'fa-award' }
+                    };
+                    const st = statusMap[c.status] || statusMap['pendente'];
+
+                    return `
+                        <div id="cand-${c.id}" class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <div class="flex flex-col md:flex-row justify-between gap-4 items-start">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <h3 class="text-lg font-bold text-gray-900">${c.titulo}</h3>
+                                        <span class="${st.color} px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1">
+                                            <i class="fas ${st.icon}"></i> ${st.label}
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 mb-1"><i class="fas fa-building mr-1 text-gray-400"></i> ${c.nome_empresa}</p>
+                                    <p class="text-sm text-gray-500 mb-2"><i class="fas fa-map-marker-alt mr-1 text-gray-400"></i> ${c.localizacao}</p>
+                                    <p class="text-xs text-gray-400">Candidatura em: ${formatarData(c.data_candidatura)}</p>
+                                </div>
+                                
+                                <div>
+                                    <button onclick="cancelarCandidatura(${c.id})" class="text-red-500 hover:text-red-700 text-sm font-medium underline decoration-red-200 hover:decoration-red-500 transition">
+                                        Cancelar / Remover
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
             } catch (error) {
                 console.error(error);
-                alert("Erro de conexão.");
             }
         }
 
-        // --- MANTIDO: Lógica de Vagas e Candidaturas ---
-        // (Copiei suas funções antigas para garantir que nada quebre)
-        async function carregarFeed() { /* ... Sua lógica anterior ... */
-             // (Simplificado para economizar espaço na resposta, mas imagine que o código completo de carregarFeed está aqui ou sendo importado)
-             // Para garantir que funcione, certifique-se de que o script carregarFeed está presente.
-             // Se preferir, pode manter o seu dashboard.html antigo e apenas COLAR o bloco da nova função carregarPropostas e o botão da Tab.
-             
-             // VOU INCLUIR A VERSÃO BÁSICA DO FEED AQUI PARA GARANTIR O FUNCIONAMENTO
-             const container = document.getElementById('feedVagas');
-             const token = JSON.parse(localStorage.getItem('token'));
-             const params = new URLSearchParams();
-             
-             // (Adicione aqui a lógica de captura dos filtros se quiser manter funcional nesta versão copiada)
-             try {
-                 const response = await fetch(`${API_URL}/vagas/feed`, { headers: { 'Authorization': `Bearer ${token}` } });
-                 const vagas = await response.json();
-                 document.getElementById('statsVagasDisponiveis').textContent = vagas.length;
-                 
-                 if(vagas.length === 0) { container.innerHTML = '<div class="text-center py-4">Sem vagas novas</div>'; return; }
-                 
-                 container.innerHTML = vagas.map(v => `
-                    <div class="bg-white border p-6 rounded-lg mb-4">
-                        <h3 class="font-bold">${v.titulo}</h3>
-                        <p class="text-sm text-gray-600">${v.nome_empresa}</p>
-                        <button onclick="candidatar(${v.id})" class="mt-2 text-orange-500 font-medium">Candidatar-se</button>
-                    </div>
-                 `).join('');
-             } catch(e) { console.error(e); }
+        // --- AÇÕES ---
+        async function candidatar(vagaId) {
+            const token = JSON.parse(localStorage.getItem('token'));
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_URL}/candidaturas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ vagaId })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Candidatura enviada com sucesso! 🚀');
+                    carregarFeed(); 
+                    carregarMinhasCandidaturas();
+                } else {
+                    alert(data.message);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert('Erro de conexão.');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
-        async function carregarMinhasCandidaturas() {
-             const container = document.getElementById('contentCandidaturas');
-             const token = JSON.parse(localStorage.getItem('token'));
-             try {
-                 const response = await fetch(`${API_URL}/minhas-candidaturas`, { headers: { 'Authorization': `Bearer ${token}` } });
-                 const cands = await response.json();
-                 container.innerHTML = cands.map(c => `<div class="bg-white border p-4 rounded mb-2 flex justify-between"><span>${c.titulo}</span><span class="text-sm bg-gray-100 px-2 rounded">${c.status}</span></div>`).join('') || '<p>Sem candidaturas</p>';
-             } catch(e){}
-        }
-        
-        async function candidatar(id) { /* Lógica de candidatar... */ }
+        async function responderProposta(id, vagaId, status) {
+            const token = JSON.parse(localStorage.getItem('token'));
+            if(!confirm(status === 'aceito' ? 'Aceitar esta proposta?' : 'Recusar esta proposta?')) return;
 
-        // Inicialização
-        carregarFeed();
-        carregarPropostas(); // Já carrega o número de propostas no badge
+            try {
+                const response = await fetch(`${API_URL}/convites/${id}/responder`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status, vagaId })
+                });
+                if(response.ok) {
+                    carregarPropostas();
+                    carregarMinhasCandidaturas();
+                    if(status === 'aceito') alert('Parabéns! Proposta aceita.');
+                }
+            } catch (e) { alert('Erro ao responder.'); }
+        }
+
+        async function cancelarCandidatura(id) {
+            if(!confirm('Tem certeza que deseja cancelar esta candidatura?')) return;
+            const token = JSON.parse(localStorage.getItem('token'));
+            
+            const card = document.getElementById(`cand-${id}`);
+            if(card) card.style.opacity = '0.5';
+
+            try {
+                const response = await fetch(`${API_URL}/candidaturas/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(response.ok) {
+                    carregarMinhasCandidaturas();
+                    carregarFeed(); // A vaga volta para o feed
+                } else {
+                    alert('Erro ao cancelar.');
+                    if(card) card.style.opacity = '1';
+                }
+            } catch (e) { alert('Erro de conexão.'); if(card) card.style.opacity = '1'; }
+        }
     </script>
 </body>
 </html>
