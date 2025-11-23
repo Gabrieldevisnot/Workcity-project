@@ -706,6 +706,56 @@ app.post('/convites/:id/responder', authenticateToken, async (req, res) => {
     }
 });
 
+
+// ==========================================
+// GESTÃO DE PERFIL (NOVO)
+// ==========================================
+
+// 1. OBTER MEU PERFIL
+app.get('/perfil', authenticateToken, async (req, res) => {
+    try {
+        const user = await prisma.users.findUnique({
+            where: { id: req.user.id }
+        });
+
+        if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+
+        // Removemos a senha antes de enviar para o frontend (Segurança!)
+        const { password_hash, ...safeUser } = user;
+        res.json(safeUser);
+
+    } catch (err) {
+        console.error("Erro ver perfil:", err);
+        res.status(500).json({ message: "Erro ao buscar perfil" });
+    }
+});
+
+// 2. ATUALIZAR MEU PERFIL
+app.put('/perfil', authenticateToken, async (req, res) => {
+    const { name, phone, city, specialty, experience_years, bio, avatar_url } = req.body;
+
+    try {
+        const updatedUser = await prisma.users.update({
+            where: { id: req.user.id },
+            data: {
+                name,
+                phone,
+                city, // Lembre-se que o front manda "Cidade - UF"
+                specialty,
+                experience_years: experience_years ? parseInt(experience_years) : null,
+                bio,
+                avatar_url
+            }
+        });
+
+        res.json({ message: "Perfil atualizado com sucesso!", user: updatedUser });
+
+    } catch (err) {
+        console.error("Erro atualizar perfil:", err);
+        res.status(500).json({ message: "Erro ao atualizar perfil" });
+    }
+});
+
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
 });

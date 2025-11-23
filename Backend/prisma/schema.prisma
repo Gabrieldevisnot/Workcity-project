@@ -52,6 +52,8 @@ model users {
   cpf                                      String?        @db.VarChar(20)
   specialty                                String?        @db.VarChar(100)
   experience_years                         Int?
+  bio                                      String?  
+  avatar_url                               String?  
   created_at                               DateTime?      @default(now()) @db.Timestamp(6)
   candidaturas                             candidaturas[]
   convites_convites_empresa_idTousers      convites[]     @relation("convites_empresa_idTousers")

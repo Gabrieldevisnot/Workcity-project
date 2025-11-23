@@ -24,7 +24,7 @@
             </div>
             
             <div id="headerActions" class="flex items-center space-x-3">
-                <!-- Será preenchido pelo auth.js -->
+                <!-- Preenchido pelo auth.js -->
             </div>
         </div>
     </header>
@@ -32,37 +32,38 @@
     <!-- Main Content -->
     <main class="min-h-screen py-8 px-4">
         <div class="max-w-7xl mx-auto">
-            <!-- Boas-vindas -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Painel de Oportunidades</h1>
-                <p class="text-gray-600">Gerencie suas candidaturas e receba propostas de empresas.</p>
+            
+            <!-- Topo: Boas Vindas e Foto -->
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-2xl overflow-hidden border-2 border-white shadow-sm relative">
+                    <!-- Foto de Perfil -->
+                    <img id="headerAvatar" src="" class="w-full h-full object-cover hidden">
+                    <span id="headerInicial">U</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900" id="headerNome">Olá, Profissional</h1>
+                    <p class="text-gray-600">Gerencie sua carreira e oportunidades.</p>
+                </div>
             </div>
 
-            <!-- Cards de Estatísticas -->
+            <!-- Cards Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <!-- Vagas -->
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-orange-500">
                     <div class="text-3xl font-bold text-orange-500" id="statsVagasDisponiveis">...</div>
                     <div class="text-sm text-gray-600 font-medium">Vagas no Feed</div>
                 </div>
-                
-                <!-- Propostas -->
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-purple-500 relative">
                     <div class="text-3xl font-bold text-purple-600" id="statsPropostas">0</div>
-                    <div class="text-sm text-gray-600 font-medium">Propostas Recebidas</div>
+                    <div class="text-sm text-gray-600 font-medium">Propostas</div>
                     <span id="badgePropostas" class="absolute top-2 right-2 h-3 w-3 bg-red-500 rounded-full hidden"></span>
                 </div>
-
-                <!-- Candidaturas -->
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-blue-500">
                     <div class="text-3xl font-bold text-blue-500" id="statsCandidaturas">...</div>
-                    <div class="text-sm text-gray-600 font-medium">Minhas Candidaturas</div>
+                    <div class="text-sm text-gray-600 font-medium">Candidaturas</div>
                 </div>
-                
-                <!-- Avaliação (Placeholder) -->
                 <div class="bg-white rounded-lg shadow-sm p-4 text-center border-b-4 border-yellow-400">
                     <div class="text-3xl font-bold text-yellow-500">5.0 <span class="text-sm">⭐</span></div>
-                    <div class="text-sm text-gray-600 font-medium">Sua Reputação</div>
+                    <div class="text-sm text-gray-600 font-medium">Reputação</div>
                 </div>
             </div>
 
@@ -90,24 +91,14 @@
                 <!-- 1. ABA: BUSCAR VAGAS -->
                 <div id="contentVagas" class="p-6">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Filtrar Oportunidades</h2>
-                    
-                    <!-- Filtros -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <!-- Busca Texto -->
                         <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Palavra-chave</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" id="filtroBusca" oninput="carregarFeed()" placeholder="Título ou empresa..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none">
-                            </div>
+                            <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Busca</label>
+                            <input type="text" id="filtroBusca" oninput="carregarFeed()" placeholder="Título..." class="w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
-
-                        <!-- Especialidade -->
                         <div>
                             <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Especialidade</label>
-                            <select id="filtroEspecialidade" onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white">
+                            <select id="filtroEspecialidade" onchange="carregarFeed()" class="w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-orange-500 bg-white">
                                 <option value="">Todas</option>
                                 <option value="pedreiro">Pedreiro</option>
                                 <option value="eletricista">Eletricista</option>
@@ -117,12 +108,10 @@
                                 <option value="serralheiro">Serralheiro</option>
                             </select>
                         </div>
-
-                        <!-- Localização (IBGE) -->
                         <div>
                             <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Localização</label>
                             <div class="flex gap-2">
-                                <select id="filtroUF" class="w-20 px-2 py-2 border border-gray-300 rounded-md text-center font-bold text-gray-700 focus:ring-2 focus:ring-orange-500" onchange="carregarCidades('filtroUF', 'listaCidadesBusca', 'filtroCidade')">
+                                <select id="filtroUF" class="w-20 px-2 py-2 border border-gray-300 rounded-md text-center font-bold text-gray-700 focus:ring-2 focus:ring-orange-500 outline-none" onchange="carregarCidades('filtroUF', 'listaCidadesBusca', 'filtroCidade')">
                                     <option value="">UF</option>
                                 </select>
                                 <div class="flex-1 relative">
@@ -140,12 +129,10 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Lista de Vagas -->
                     <div id="feedVagas" class="space-y-4">
-                        <div class="text-center py-12 text-gray-400">
+                        <div class="text-center text-gray-400 py-12">
                             <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
-                            <p>Carregando vagas...</p>
+                            <p>Carregando...</p>
                         </div>
                     </div>
                 </div>
@@ -153,36 +140,99 @@
                 <!-- 2. ABA: PROPOSTAS -->
                 <div id="contentPropostas" class="p-6 hidden">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Propostas de Trabalho</h2>
-                    <div id="listaPropostas" class="space-y-4">
-                        <!-- Preenchido via JS -->
-                    </div>
+                    <div id="listaPropostas" class="space-y-4"></div>
                 </div>
 
                 <!-- 3. ABA: MINHAS CANDIDATURAS -->
                 <div id="contentCandidaturas" class="p-6 hidden">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Histórico de Candidaturas</h2>
-                    <div id="listaCandidaturas" class="space-y-4">
-                        <!-- Preenchido via JS -->
-                    </div>
+                    <div id="listaCandidaturas" class="space-y-4"></div>
                 </div>
 
-                <!-- 4. ABA: MEU PERFIL -->
-                <div id="contentPerfil" class="p-6 hidden text-center py-12">
-                    <div class="bg-gray-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4 text-gray-300 text-4xl">
-                        <i class="fas fa-user-cog"></i>
+                <!-- 4. ABA: MEU PERFIL (FINALMENTE COMPLETA!) -->
+                <div id="contentPerfil" class="p-6 hidden">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-gray-900">Editar Perfil</h2>
+                            <button onclick="salvarPerfil()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium shadow-sm transition flex items-center gap-2">
+                                <i class="fas fa-save"></i> Salvar Alterações
+                            </button>
+                        </div>
+
+                        <form id="formPerfil" class="space-y-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <!-- Dados Pessoais -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                                    <input type="text" id="perfilNome" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail (Não editável)</label>
+                                    <input type="email" id="perfilEmail" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Telefone / WhatsApp</label>
+                                    <input type="tel" id="perfilTelefone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Link da Foto (URL)</label>
+                                    <input type="url" id="perfilAvatar" placeholder="https://..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                                </div>
+                            </div>
+
+                            <!-- Profissional -->
+                            <div class="border-t border-gray-200 pt-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Dados Profissionais</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Especialidade Principal</label>
+                                        <select id="perfilEspecialidade" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                                            <option value="pedreiro">Pedreiro</option>
+                                            <option value="eletricista">Eletricista</option>
+                                            <option value="pintor">Pintor</option>
+                                            <option value="encanador">Encanador</option>
+                                            <option value="carpinteiro">Carpinteiro</option>
+                                            <option value="serralheiro">Serralheiro</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Anos de Experiência</label>
+                                        <input type="number" id="perfilExperiencia" min="0" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Localização (IBGE Integrado) -->
+                            <div class="border-t border-gray-200 pt-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Localização</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                                        <select id="ufPerfil" class="w-full px-4 py-2 border border-gray-300 rounded-md" onchange="carregarCidades('ufPerfil', 'listaCidadesPerfil', 'cidadePerfil')">
+                                            <option value="">UF</option>
+                                        </select>
+                                    </div>
+                                    <div class="md:col-span-2 relative">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+                                        <input type="text" id="cidadePerfil" list="listaCidadesPerfil" placeholder="Selecione o Estado..." disabled class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white disabled:bg-gray-100">
+                                        <datalist id="listaCidadesPerfil"></datalist>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bio -->
+                            <div class="border-t border-gray-200 pt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Sobre Mim (Bio)</label>
+                                <textarea id="perfilBio" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500" placeholder="Conte um pouco sobre sua experiência..."></textarea>
+                            </div>
+                        </form>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Perfil do Profissional</h3>
-                    <p class="text-gray-500 mb-6">Edite suas informações, foto e especialidades.</p>
-                    <button class="px-6 py-2 bg-gray-200 text-gray-500 rounded-md cursor-not-allowed" disabled>
-                        Funcionalidade em Desenvolvimento
-                    </button>
                 </div>
 
             </div>
         </div>
     </main>
 
-    <!-- Scripts Essenciais -->
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/ibge.js"></script>
@@ -193,28 +243,28 @@
         updateHeaderForLoggedUser();
 
         document.addEventListener('DOMContentLoaded', () => {
-            carregarEstados('filtroUF'); // Inicia filtro IBGE
-            carregarFeed();              // Carrega lista inicial
-            carregarPropostas();         // Verifica convites
-            carregarMinhasCandidaturas();// Verifica candidaturas para estatísticas
+            carregarEstados('filtroUF'); // Filtro Vagas
+            carregarEstados('ufPerfil'); // Filtro Perfil (NOVO)
+            
+            carregarFeed();
+            carregarPropostas();
+            carregarMinhasCandidaturas();
+            carregarPerfil(); // Carrega os dados do usuário (NOVO)
         });
 
-        // --- NAVEGAÇÃO (TABS) ---
+        // --- NAVEGAÇÃO ---
         function switchTab(tab) {
             const tabs = ['vagas', 'propostas', 'candidaturas', 'perfil'];
-            
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
                 const content = document.getElementById(`content${t.charAt(0).toUpperCase() + t.slice(1)}`);
-                
                 if (t === tab) {
                     btn.className = 'whitespace-nowrap px-6 py-4 border-b-2 border-orange-500 text-orange-600 font-bold text-sm transition-colors';
                     content.classList.remove('hidden');
-                    
-                    // Recarrega dados ao entrar na aba
                     if(tab === 'vagas') carregarFeed();
                     if(tab === 'propostas') carregarPropostas();
                     if(tab === 'candidaturas') carregarMinhasCandidaturas();
+                    if(tab === 'perfil') carregarPerfil();
                 } else {
                     btn.className = 'whitespace-nowrap px-6 py-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm transition-colors';
                     content.classList.add('hidden');
@@ -222,307 +272,207 @@
             });
         }
 
-        // --- FUNÇÕES AUXILIARES DE DATA E MOEDA ---
-        function formatarData(dataISO) {
-            if (!dataISO) return 'Data n/d';
-            const data = new Date(dataISO);
-            const hoje = new Date();
-            const diffDias = Math.floor((hoje - data) / (1000 * 60 * 60 * 24));
-            
-            if (diffDias === 0) return 'Hoje';
-            if (diffDias === 1) return 'Ontem';
-            if (diffDias < 7) return `${diffDias} dias atrás`;
-            return data.toLocaleDateString('pt-BR');
+        // --- FORMATADORES ---
+        function formatarData(d) { 
+            if(!d) return 'N/A';
+            return new Date(d).toLocaleDateString('pt-BR');
         }
-
         function formatarSalario(min, max) {
             if (!min) return 'A combinar';
-            const format = (v) => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-            if (min && !max) return `A partir de ${format(min)}`;
-            return `${format(min)} - ${format(max)}`;
+            const f = (v) => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+            return (min && max) ? `${f(min)} - ${f(max)}` : `A partir de ${f(min)}`;
         }
 
-        // --- 1. CARREGAR FEED DE VAGAS ---
+        // --- PERFIL (LÓGICA NOVA) ---
+        async function carregarPerfil() {
+            const token = JSON.parse(localStorage.getItem('token'));
+            try {
+                const response = await fetch(`${API_URL}/perfil`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const user = await response.json();
+
+                if (response.ok) {
+                    // Preenche campos
+                    document.getElementById('perfilNome').value = user.name;
+                    document.getElementById('perfilEmail').value = user.email;
+                    document.getElementById('perfilTelefone').value = user.phone || '';
+                    document.getElementById('perfilEspecialidade').value = user.specialty || 'pedreiro';
+                    document.getElementById('perfilExperiencia').value = user.experience_years || 0;
+                    document.getElementById('cidadePerfil').value = user.city || '';
+                    document.getElementById('perfilBio').value = user.bio || '';
+                    document.getElementById('perfilAvatar').value = user.avatar_url || '';
+
+                    // Atualiza Header
+                    document.getElementById('headerNome').textContent = `Olá, ${user.name.split(' ')[0]}`;
+                    if (user.avatar_url) {
+                        const img = document.getElementById('headerAvatar');
+                        img.src = user.avatar_url;
+                        img.classList.remove('hidden');
+                        document.getElementById('headerInicial').classList.add('hidden');
+                    }
+                }
+            } catch (error) { console.error("Erro perfil:", error); }
+        }
+
+        async function salvarPerfil() {
+            const token = JSON.parse(localStorage.getItem('token'));
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            btn.disabled = true;
+
+            const dados = {
+                name: document.getElementById('perfilNome').value,
+                phone: document.getElementById('perfilTelefone').value,
+                specialty: document.getElementById('perfilEspecialidade').value,
+                experience_years: document.getElementById('perfilExperiencia').value,
+                city: document.getElementById('cidadePerfil').value,
+                bio: document.getElementById('perfilBio').value,
+                avatar_url: document.getElementById('perfilAvatar').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/perfil`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(dados)
+                });
+
+                if (response.ok) {
+                    alert("Perfil atualizado com sucesso! ✅");
+                    carregarPerfil(); // Atualiza visual
+                } else {
+                    alert("Erro ao salvar.");
+                }
+            } catch (error) { alert("Erro de conexão."); } 
+            finally { btn.innerHTML = originalText; btn.disabled = false; }
+        }
+
+        // --- VAGAS, PROPOSTAS, CANDIDATURAS ---
         async function carregarFeed() {
             const container = document.getElementById('feedVagas');
             const token = JSON.parse(localStorage.getItem('token'));
-
-            // Filtros
-            const busca = document.getElementById('filtroBusca').value;
-            const especialidade = document.getElementById('filtroEspecialidade').value;
-            const cidade = document.getElementById('filtroCidade').value;
-
             const params = new URLSearchParams();
-            if (busca) params.append('busca', busca);
-            if (especialidade) params.append('especialidade', especialidade);
-            if (cidade) params.append('cidade', cidade);
+            
+            const busca = document.getElementById('filtroBusca').value;
+            const esp = document.getElementById('filtroEspecialidade').value;
+            const cid = document.getElementById('filtroCidade').value;
+            
+            if(busca) params.append('busca', busca);
+            if(esp) params.append('especialidade', esp);
+            if(cid) params.append('cidade', cid);
 
             try {
-                const response = await fetch(`${API_URL}/vagas/feed?${params.toString()}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const vagas = await response.json();
-
-                // Proteção contra erro de servidor
-                if (!Array.isArray(vagas)) {
-                    throw new Error("Resposta inválida do servidor");
-                }
-
+                const res = await fetch(`${API_URL}/vagas/feed?${params}`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const vagas = await res.json();
+                
+                if(!Array.isArray(vagas)) throw new Error();
                 document.getElementById('statsVagasDisponiveis').textContent = vagas.length;
 
-                if (vagas.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-center py-16 bg-white rounded-lg border border-gray-100">
-                            <div class="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-search text-gray-300 text-3xl"></i>
-                            </div>
-                            <h3 class="text-lg font-semibold text-gray-900">Nenhuma vaga encontrada</h3>
-                            <p class="text-gray-500 text-sm mt-2">Tente ajustar os filtros ou volte mais tarde.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = vagas.map(vaga => `
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-300 group relative">
+                container.innerHTML = vagas.length ? vagas.map(v => `
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all mb-4">
                         <div class="flex flex-col md:flex-row justify-between gap-4">
                             <div class="flex-1">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">${vaga.titulo}</h3>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded font-bold uppercase tracking-wide">Nova</span>
+                                <h3 class="text-lg font-bold text-gray-900">${v.titulo}</h3>
+                                <p class="text-sm text-orange-600 font-medium mb-2"><i class="fas fa-building"></i> ${v.nome_empresa}</p>
+                                <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-2">
+                                    <span><i class="fas fa-map-marker-alt"></i> ${v.localizacao}</span>
+                                    <span class="text-green-600 font-bold"><i class="fas fa-wallet"></i> ${formatarSalario(v.salario_min, v.salario_max)}</span>
                                 </div>
-                                <p class="text-gray-600 font-medium mb-4 flex items-center gap-2">
-                                    <i class="fas fa-building text-gray-400"></i> ${vaga.nome_empresa}
-                                </p>
-                                
-                                <div class="flex flex-wrap gap-y-2 gap-x-6 text-sm text-gray-500 mb-4">
-                                    <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-orange-500"></i> ${vaga.localizacao}</span>
-                                    <span class="flex items-center gap-1"><i class="fas fa-tools text-orange-500"></i> ${vaga.especialidade || 'Geral'}</span>
-                                    <span class="flex items-center gap-1 font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded"><i class="fas fa-wallet mr-1"></i> ${formatarSalario(vaga.salario_min, vaga.salario_max)}</span>
-                                </div>
-                                
-                                <p class="text-gray-600 text-sm line-clamp-2 leading-relaxed mb-4 bg-gray-50 p-3 rounded border border-gray-100">
-                                    ${vaga.descricao}
-                                </p>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">${v.descricao}</p>
                             </div>
-                            
-                            <div class="flex items-center md:items-start">
-                                <button onclick="candidatar(${vaga.id})" class="w-full md:w-auto px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition shadow-sm hover:shadow flex items-center justify-center gap-2 whitespace-nowrap">
-                                    Candidatar-se <i class="fas fa-paper-plane"></i>
+                            <div>
+                                <button onclick="candidatar(${v.id})" class="w-full md:w-auto px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition">
+                                    Candidatar-se
                                 </button>
                             </div>
                         </div>
-                        <div class="absolute top-4 right-4 text-xs text-gray-400 font-medium">
-                            ${formatarData(vaga.created_at)}
-                        </div>
                     </div>
-                `).join('');
-
-            } catch (error) {
-                console.error(error);
-                container.innerHTML = `<div class="text-center text-red-500 py-8 bg-red-50 rounded border border-red-100">Erro ao carregar vagas. Verifique sua conexão.</div>`;
-            }
+                `).join('') : '<div class="text-center py-12 text-gray-500">Nenhuma vaga encontrada.</div>';
+            } catch(e) { container.innerHTML = '<p class="text-center text-red-500">Erro ao carregar.</p>'; }
         }
 
-        // --- 2. CARREGAR PROPOSTAS ---
         async function carregarPropostas() {
             const container = document.getElementById('listaPropostas');
             const token = JSON.parse(localStorage.getItem('token'));
-
             try {
-                const response = await fetch(`${API_URL}/minhas-propostas`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const propostas = await response.json();
-
-                const pendentes = propostas.filter(p => p.status === 'enviado').length;
-                document.getElementById('statsPropostas').textContent = pendentes;
+                const res = await fetch(`${API_URL}/minhas-propostas`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const props = await res.json();
                 
-                // Badge de notificação
-                const badge = document.getElementById('badgePropostas');
-                if(pendentes > 0) {
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
+                const pendentes = props.filter(p => p.status === 'enviado').length;
+                document.getElementById('statsPropostas').textContent = pendentes;
+                document.getElementById('badgePropostas').style.display = pendentes > 0 ? 'block' : 'none';
 
-                if (propostas.length === 0) {
-                    container.innerHTML = `<div class="text-center py-12 text-gray-500">Nenhuma proposta recebida.</div>`;
-                    return;
-                }
-
-                container.innerHTML = propostas.map(p => {
-                    const isPendente = p.status === 'enviado';
-                    let statusHtml = '';
-                    if (p.status === 'aceito') statusHtml = '<span class="text-green-600 bg-green-100 px-3 py-1 rounded-full text-xs font-bold">ACEITO</span>';
-                    if (p.status === 'recusado') statusHtml = '<span class="text-red-600 bg-red-100 px-3 py-1 rounded-full text-xs font-bold">RECUSADO</span>';
-
-                    return `
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm ${isPendente ? 'border-l-4 border-l-purple-500' : 'opacity-70'}">
-                            <div class="flex flex-col md:flex-row justify-between gap-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <span class="text-purple-600 bg-purple-50 p-2 rounded-md"><i class="fas fa-handshake"></i></span>
-                                        <h3 class="text-lg font-bold text-gray-900">Convite para: ${p.titulo_vaga}</h3>
-                                        ${statusHtml}
-                                    </div>
-                                    <p class="text-gray-600 mb-3 pl-11">Empresa: <strong>${p.nome_empresa}</strong></p>
-                                    
-                                    <div class="bg-purple-50 p-4 rounded-lg text-gray-700 text-sm mb-3 ml-11 border border-purple-100 relative">
-                                        <i class="fas fa-quote-left text-purple-200 absolute top-2 left-2"></i>
-                                        <p class="pl-4 italic">"${p.mensagem || 'Olá! Gostamos do seu perfil.'}"</p>
-                                    </div>
-                                </div>
-                                
-                                ${isPendente ? `
-                                    <div class="flex flex-row md:flex-col gap-2 justify-center min-w-[140px]">
-                                        <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'aceito')" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow-sm text-sm font-medium transition">
-                                            <i class="fas fa-check mr-1"></i> Aceitar
-                                        </button>
-                                        <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'recusado')" class="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded text-sm font-medium transition">
-                                            <i class="fas fa-times mr-1"></i> Recusar
-                                        </button>
-                                    </div>
-                                ` : ''}
+                container.innerHTML = props.length ? props.map(p => `
+                    <div class="bg-white border p-6 rounded-lg mb-4 ${p.status === 'enviado' ? 'border-l-4 border-l-purple-500 shadow-md' : 'opacity-75'}">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-gray-900">Convite: ${p.titulo_vaga}</h3>
+                                <p class="text-sm text-gray-600">${p.nome_empresa}</p>
+                                <p class="text-xs text-gray-400 mt-1">Msg: "${p.mensagem || ''}"</p>
+                            </div>
+                            <div class="flex gap-2">
+                                ${p.status === 'enviado' ? `
+                                    <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'aceito')" class="px-3 py-1 bg-green-500 text-white rounded text-sm">Aceitar</button>
+                                    <button onclick="responderProposta(${p.id}, ${p.vaga_id}, 'recusado')" class="px-3 py-1 border border-gray-300 rounded text-sm">Recusar</button>
+                                ` : `<span class="text-xs font-bold uppercase px-2 py-1 bg-gray-100 rounded">${p.status}</span>`}
                             </div>
                         </div>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error(error);
-            }
+                    </div>
+                `).join('') : '<div class="text-center py-12 text-gray-500">Sem propostas.</div>';
+            } catch(e) {}
         }
 
-        // --- 3. CARREGAR CANDIDATURAS ---
         async function carregarMinhasCandidaturas() {
             const container = document.getElementById('listaCandidaturas');
             const token = JSON.parse(localStorage.getItem('token'));
-
             try {
-                const response = await fetch(`${API_URL}/minhas-candidaturas`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const candidaturas = await response.json();
-
-                document.getElementById('statsCandidaturas').textContent = candidaturas.length;
-
-                if (candidaturas.length === 0) {
-                    container.innerHTML = `<div class="text-center py-12 text-gray-500">Você ainda não se candidatou.</div>`;
-                    return;
-                }
-
-                container.innerHTML = candidaturas.map(c => {
-                    // Mapeamento de Status
-                    const statusMap = {
-                        'pendente': { label: 'Enviada', color: 'bg-blue-100 text-blue-800', icon: 'fa-paper-plane' },
-                        'aceito': { label: 'Aprovado', color: 'bg-green-100 text-green-800', icon: 'fa-check' },
-                        'recusado': { label: 'Não Selecionado', color: 'bg-red-100 text-red-800', icon: 'fa-times' },
-                        'contratado': { label: 'Contratado', color: 'bg-purple-100 text-purple-800', icon: 'fa-award' }
-                    };
-                    const st = statusMap[c.status] || statusMap['pendente'];
-
-                    return `
-                        <div id="cand-${c.id}" class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                            <div class="flex flex-col md:flex-row justify-between gap-4 items-start">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <h3 class="text-lg font-bold text-gray-900">${c.titulo}</h3>
-                                        <span class="${st.color} px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1">
-                                            <i class="fas ${st.icon}"></i> ${st.label}
-                                        </span>
-                                    </div>
-                                    <p class="text-gray-600 mb-1"><i class="fas fa-building mr-1 text-gray-400"></i> ${c.nome_empresa}</p>
-                                    <p class="text-sm text-gray-500 mb-2"><i class="fas fa-map-marker-alt mr-1 text-gray-400"></i> ${c.localizacao}</p>
-                                    <p class="text-xs text-gray-400">Candidatura em: ${formatarData(c.data_candidatura)}</p>
-                                </div>
-                                
-                                <div>
-                                    <button onclick="cancelarCandidatura(${c.id})" class="text-red-500 hover:text-red-700 text-sm font-medium underline decoration-red-200 hover:decoration-red-500 transition">
-                                        Cancelar / Remover
-                                    </button>
-                                </div>
-                            </div>
+                const res = await fetch(`${API_URL}/minhas-candidaturas`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const cands = await res.json();
+                document.getElementById('statsCandidaturas').textContent = cands.length;
+                
+                container.innerHTML = cands.length ? cands.map(c => `
+                    <div class="bg-white border p-6 rounded-lg mb-4 flex justify-between items-center" id="cand-${c.candidatura_id || c.id}">
+                        <div>
+                            <h3 class="font-bold text-gray-900">${c.titulo}</h3>
+                            <p class="text-sm text-gray-600">${c.nome_empresa}</p>
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded mt-2 inline-block uppercase font-bold">${c.status}</span>
                         </div>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error(error);
-            }
+                        <button onclick="cancelarCandidatura(${c.candidatura_id || c.id})" class="text-red-500 text-sm hover:underline">Cancelar</button>
+                    </div>
+                `).join('') : '<div class="text-center py-12 text-gray-500">Sem candidaturas.</div>';
+            } catch(e) {}
         }
 
         // --- AÇÕES ---
         async function candidatar(vagaId) {
             const token = JSON.parse(localStorage.getItem('token'));
-            const btn = event.currentTarget;
-            const originalText = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            btn.disabled = true;
-
+            if(!confirm('Confirmar candidatura?')) return;
             try {
-                const response = await fetch(`${API_URL}/candidaturas`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ vagaId })
-                });
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert('Candidatura enviada com sucesso! 🚀');
-                    carregarFeed(); 
-                    carregarMinhasCandidaturas();
-                } else {
-                    alert(data.message);
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                alert('Erro de conexão.');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+                const res = await fetch(`${API_URL}/candidaturas`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ vagaId }) });
+                if(res.ok) { alert('Candidatura enviada!'); carregarFeed(); carregarMinhasCandidaturas(); }
+                else { const d = await res.json(); alert(d.message); }
+            } catch(e) { alert('Erro de conexão'); }
         }
 
-        async function responderProposta(id, vagaId, status) {
+        async function responderProposta(id, vid, status) {
             const token = JSON.parse(localStorage.getItem('token'));
-            if(!confirm(status === 'aceito' ? 'Aceitar esta proposta?' : 'Recusar esta proposta?')) return;
-
             try {
-                const response = await fetch(`${API_URL}/convites/${id}/responder`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ status, vagaId })
-                });
-                if(response.ok) {
-                    carregarPropostas();
-                    carregarMinhasCandidaturas();
-                    if(status === 'aceito') alert('Parabéns! Proposta aceita.');
-                }
-            } catch (e) { alert('Erro ao responder.'); }
+                const res = await fetch(`${API_URL}/convites/${id}/responder`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ status, vagaId: vid }) });
+                if(res.ok) { alert('Respondido!'); carregarPropostas(); carregarMinhasCandidaturas(); }
+            } catch(e) { alert('Erro'); }
         }
 
         async function cancelarCandidatura(id) {
-            if(!confirm('Tem certeza que deseja cancelar esta candidatura?')) return;
             const token = JSON.parse(localStorage.getItem('token'));
-            
-            const card = document.getElementById(`cand-${id}`);
-            if(card) card.style.opacity = '0.5';
-
+            if(!confirm('Cancelar?')) return;
             try {
-                const response = await fetch(`${API_URL}/candidaturas/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if(response.ok) {
-                    carregarMinhasCandidaturas();
-                    carregarFeed(); // A vaga volta para o feed
-                } else {
-                    alert('Erro ao cancelar.');
-                    if(card) card.style.opacity = '1';
+                const res = await fetch(`${API_URL}/candidaturas/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if(res.ok) { 
+                    const el = document.getElementById(`cand-${id}`);
+                    if(el) el.remove(); 
+                    carregarFeed(); 
                 }
-            } catch (e) { alert('Erro de conexão.'); if(card) card.style.opacity = '1'; }
+            } catch(e) {}
         }
     </script>
 </body>
