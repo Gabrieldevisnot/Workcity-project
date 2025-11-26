@@ -1,0 +1,37 @@
+services:
+  # Serviço do Backend (Node.js)
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      # Conexão com o banco (host = db)
+      - DATABASE_URL=postgres://postgres:Sout.ln102030@db:5432/workcity_db?schema=public
+      - JWT_SECRET=SEGREDO_WORKCITY
+    depends_on:
+      - db
+    # Reinicia sempre que houver falha (ex: banco ainda não está pronto)
+    restart: always
+    # Garante que o cliente do Prisma seja gerado na inicialização do container
+    command: sh -c "npx prisma generate && node server.js"
+    # --- COMENTE ESTAS LINHAS TEMPORARIAMENTE ---
+    # volumes:
+    #   - ./:/app
+    #   - /app/node_modules
+    # --------------------------------------------
+
+  # Serviço do Banco de Dados (Postgres)
+  db:
+    # Usa a imagem oficial (Debian-based) para compatibilidade máxima
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sout.ln102030
+      POSTGRES_DB: workcity_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
