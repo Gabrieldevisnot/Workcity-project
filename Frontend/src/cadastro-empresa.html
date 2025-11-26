@@ -6,117 +6,111 @@
     <title>Cadastro Empresa - WorkCity</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        })();
+    </script>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen py-12 px-4">
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Cadastro de Empresa</h1>
-                <p class="text-gray-600 mt-2">Preencha os dados da sua empresa</p>
-            </div>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200 py-12 px-4">
+    
+    <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Cadastro de Empresa</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">Crie sua conta para publicar vagas.</p>
+        </div>
 
-            <div class="bg-white rounded-lg shadow-md p-8">
-                <form id="cadastroForm" class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Razão Social *</label>
-                        <input type="text" id="razaoSocial" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">CNPJ *</label>
-                            <input type="text" id="cnpj" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500" placeholder="00.000.000/0000-00">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefone *</label>
-                            <input type="tel" id="telefone" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">E-mail Corporativo *</label>
-                        <input type="email" id="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Endereço Completo *</label>
-                        <input type="text" id="endereco" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                    </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Estado *</label>
-                        <select id="ufCadastro" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
-                            onchange="carregarCidades('ufCadastro', 'listaCidadesCadastro', 'cidadeCadastro')">
-                            <option value="">Selecione...</option>
-                        </select>
-                    </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 border border-gray-200 dark:border-gray-700 transition-colors">
+            <form id="cadastroForm" class="space-y-6">
                 
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cidade *</label>
-                        <div class="relative">
-                            <input type="text" id="cidadeCadastro" list="listaCidadesCadastro"
-                                required 
-                                disabled
-                                placeholder="Selecione o Estado primeiro..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 bg-gray-50 disabled:cursor-not-allowed">
+                <!-- Dados Principais -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Razão Social *</label>
+                    <input type="text" id="razaoSocial" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CNPJ *</label>
+                        <input type="text" id="cnpj" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telefone *</label>
+                        <input type="tel" id="telefone" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail Corporativo *</label>
+                    <input type="email" id="email" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                </div>
+
+                <!-- Endereço IBGE -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Endereço Completo</label>
+                    <input type="text" id="endereco" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none mb-4">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estado *</label>
+                            <select id="ufCadastro" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none" onchange="carregarCidades('ufCadastro', 'listaCidadesCadastro', 'cidadeCadastro')">
+                                <option value="">UF</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 relative">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cidade *</label>
+                            <input type="text" id="cidadeCadastro" list="listaCidadesCadastro" required disabled placeholder="Selecione o Estado..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:ring-2 focus:ring-orange-500 outline-none">
                             <datalist id="listaCidadesCadastro"></datalist>
                         </div>
                     </div>
                 </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Senha *</label>
-                            <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirmar Senha *</label>
-                            <input type="password" id="confirmPassword" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
-                        </div>
+                <!-- Senha -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha *</label>
+                        <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
                     </div>
-
-                    <div class="flex items-start">
-                        <input type="checkbox" id="terms" required class="h-4 w-4 text-orange-500 mt-1">
-                        <label for="terms" class="ml-2 text-sm text-gray-600">
-                            Aceito os <a href="#" class="text-orange-500">termos de uso</a> e <a href="#" class="text-orange-500">política de privacidade</a>
-                        </label>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirmar Senha *</label>
+                        <input type="password" id="confirmPassword" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
                     </div>
-
-                    <button type="submit" class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition">
-                        Criar Conta
-                    </button>
-                </form>
-
-                <div class="mt-6 text-center">
-                    <p class="text-gray-600">
-                        Já tem uma conta?
-                        <button onclick="navigateTo('login-empresa.html')" class="text-orange-500 hover:text-orange-600 font-medium">
-                            Faça login
-                        </button>
-                    </p>
                 </div>
+
+                <button type="submit" class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-bold transition shadow-md mt-6">
+                    Criar Conta
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-gray-600 dark:text-gray-400">
+                    Já tem uma conta? <a href="login-empresa.html" class="text-orange-600 dark:text-orange-400 font-medium hover:underline">Faça login</a>
+                </p>
             </div>
         </div>
     </div>
 
     <script src="scripts/auth.js"></script>
-    <script src="scripts/main.js"></script>
     <script src="scripts/ibge.js"></script>
     <script>
-        // 1. Inicia o IBGE ao abrir a página
-    document.addEventListener('DOMContentLoaded', () => {
-        carregarEstados('ufCadastro');
-    });
+        // Iniciar IBGE
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarEstados('ufCadastro');
+        });
+
         document.getElementById('cadastroForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
             if (password !== confirmPassword) {
-                showToast('As senhas não coincidem', 'error');
+                alert('As senhas não coincidem');
                 return;
             }
             
@@ -127,9 +121,7 @@
                 telefone: document.getElementById('telefone').value,
                 endereco: document.getElementById('endereco').value,
                 cidade: document.getElementById('cidadeCadastro').value,
-                estado: document.getElementById('ufCadastro').value,
-                password: document.getElementById('password').value, // <--- O Backend precisa disso!
-    
+                password: password,
                 cadastroDate: new Date().toISOString()
             };
             
