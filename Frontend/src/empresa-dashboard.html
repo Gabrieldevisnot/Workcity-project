@@ -6,313 +6,340 @@
     <title>Dashboard Empresa - WorkCity</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    
+    <!-- CONFIGURAÇÃO TAILWIND DARK MODE -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Habilita modo manual via classe 'dark'
+        }
+    </script>
+
+    <!-- SCRIPT DE INICIALIZAÇÃO OTIMIZADO (COPIAR PARA TODAS AS PÁGINAS) -->
+    <!-- Este script roda antes do corpo carregar para evitar "piscar" -->
+    <script>
+        (function() {
+            // Verifica preferência salva ou do sistema
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-4 py-3">
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 sticky top-0 z-50 transition-colors duration-200">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <button onclick="navigateToHome()">
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-building text-orange-500 text-3xl"></i>
                         <div>
-                            <h3 class="text-xl font-bold">WorkCity</h3>
-                            <p class="text-sm text-gray-400">Engenharia Civil</p>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">WorkCity</h3>
+                            <p class="text-sm text-gray-900 dark:text-gray-200 font-medium">Área da Empresa</p>
                         </div>
                     </div>
                 </button>
-                <nav class="hidden md:flex space-x-6">
-                    <button class="text-orange-500">Dashboard</button>
-                </nav>
             </div>
             
-            <div id="headerActions" class="flex items-center space-x-3"></div>
+            <div class="flex items-center gap-4">
+                <!-- BOTÃO DE TEMA -->
+                <div class="relative">
+                    <button onclick="toggleThemeMenu()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none">
+                        <i class="fas fa-adjust text-xl"></i>
+                    </button>
+                    <!-- Dropdown do Tema -->
+                    <div id="themeMenu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 border border-gray-200 dark:border-gray-700 z-50">
+                        <button onclick="setTheme('light')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-sun mr-2 text-orange-400"></i> Claro
+                        </button>
+                        <button onclick="setTheme('dark')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-moon mr-2 text-blue-400"></i> Escuro
+                        </button>
+                        <button onclick="setTheme('system')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-desktop mr-2 text-gray-400"></i> Sistema
+                        </button>
+                    </div>
+                </div>
+
+                <div id="headerActions" class="flex items-center space-x-3">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="min-h-screen py-8">
-        <div class="max-w-7xl mx-auto px-4">
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard da Empresa</h1>
-                <p class="text-gray-600">Bem-vindo(a) à WorkCity! Gerencie suas vagas e encontre os melhores profissionais.</p>
+    <main class="min-h-screen py-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Cabeçalho -->
+            <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Painel de Gestão</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Bem-vindo! Gerencie suas vagas e candidatos.</p>
+                </div>
+                <div class="text-right hidden md:block">
+                    <p class="text-sm text-gray-500 dark:text-gray-400" id="dataAtual">...</p>
+                </div>
             </div>
 
-            <!-- Success Message -->
-            <div class="mb-8 p-4 bg-green-100 border border-green-200 rounded-lg flex items-center">
-                <i class="fas fa-check-circle text-green-600 mr-3"></i>
-                <p class="text-green-800 font-medium">
-                    🎉 Cadastro realizado com sucesso! Agora você pode criar vagas e buscar profissionais.
-                </p>
-            </div>
-
-            <!-- Quick Actions -->
+            <!-- Cards de Ação Rápida -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-lg p-6 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-orange-200" onclick="navigateTo('criar-vaga.html')">
-                    <div class="p-3 bg-orange-100 rounded-full w-fit mx-auto mb-4">
-                        <i class="fas fa-plus text-orange-500 text-3xl"></i>
+                <!-- Nova Vaga -->
+                <div onclick="window.location.href='criar-vaga.html'" class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-500 transition-all cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-plus-circle text-6xl text-orange-500"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Criar Nova Vaga</h3>
-                    <p class="text-sm text-gray-600">Publique uma vaga e encontre o profissional ideal</p>
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                            <i class="fas fa-plus text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Nova Vaga</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Publicar oportunidade</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="bg-white rounded-lg p-6 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-200"
-                    onclick="window.location.href='buscar-profissionais.html'">
-                    <div class="p-3 bg-blue-100 rounded-full w-fit mx-auto mb-4">
-                        <i class="fas fa-search text-blue-500 text-3xl"></i>
+
+                <!-- Buscar Talentos -->
+                <div onclick="window.location.href='buscar-profissionais.html'" class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500 transition-all cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-search text-6xl text-blue-500"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Buscar Profissionais</h3>
-                    <p class="text-sm text-gray-600">Explore nosso banco de talentos qualificados</p>
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                            <i class="fas fa-search text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Buscar Talentos</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Recrutamento ativo</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="bg-white rounded-lg p-6 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-green-200"
-                    onclick="focarNasVagas()">
-                    <div class="p-3 bg-green-100 rounded-full w-fit mx-auto mb-4">
-                        <i class="fas fa-check-circle text-green-500 text-3xl"></i>
+
+                <!-- Gerenciar Vagas -->
+                <div onclick="focarNasVagas()" class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-green-300 dark:hover:border-green-500 transition-all cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-clipboard-list text-6xl text-green-500"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Gerenciar Vagas</h3>
-                    <p class="text-sm text-gray-600">Acompanhe candidaturas e gerencie processos</p>
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400 group-hover:bg-green-500 group-hover:text-white transition-colors">
+                            <i class="fas fa-tasks text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Minhas Vagas</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Ver candidaturas</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Estatísticas -->
+            <!-- Painel de Estatísticas -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-                    <div class="text-2xl font-bold text-orange-500" id="totalVagas"></div>
-                    <div class="text-sm text-gray-600">Vagas Publicadas</div>
+                <!-- Total Vagas -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-orange-500">
+                    <div class="text-3xl font-bold text-orange-500" id="totalVagas">...</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Vagas Publicadas</div>
                 </div>
                 
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-                    <div class="text-2xl font-bold text-blue-500" id="vagasAtivas"></div>
-                    <div class="text-sm text-gray-600">Vagas Ativas</div>
+                <!-- Vagas Abertas -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-green-500">
+                    <div class="text-3xl font-bold text-green-500" id="vagasAtivas">...</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Vagas Abertas</div>
+                </div>
+
+                <!-- Total Candidatos -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-blue-500">
+                    <div class="text-3xl font-bold text-blue-500" id="totalCandidatos">...</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Candidatos</div>
                 </div>
                 
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-                    <div class="text-2xl font-bold text-green-500" id="totalCandidatos"></div>
-                    <div class="text-sm text-gray-600">Total de Candidatos</div>
-                </div>
-                
-                <div class="bg-white rounded-lg shadow-sm p-4 text-center">
-                    <div class="text-2xl font-bold text-purple-500">0</div>
-                    <div class="text-sm text-gray-600">Profissionais Disponíveis</div>
+                <!-- Visualizações -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-yellow-400">
+                    <div class="text-3xl font-bold text-yellow-500" id="totalVisualizacoes">-</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Visualizações</div>
                 </div>
             </div>
 
-            <!-- Tabs -->
-            <div class="bg-white rounded-lg shadow-sm">
-                <div class="border-b border-gray-200">
-                    <nav class="flex -mb-px">
-                        <button onclick="switchTab('vagas')" id="tabVagas" class="px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium">
-                            Minhas Vagas
-                        </button>
-                        <!-- <button onclick="switchTab('profissionais')" id="tabProfissionais" class="px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium">
-                            Buscar Profissionais
-                        </button> -->
-                    </nav>
+            <!-- Lista de Vagas -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden scroll-mt-24 transition-colors duration-200" id="areaListaVagas">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
+                    <h2 class="text-lg font-bold text-gray-800 dark:text-white">Minhas Vagas</h2>
+                    <button onclick="window.location.href='criar-vaga.html'" class="text-sm text-orange-600 dark:text-orange-400 font-medium hover:underline">
+                        + Nova Vaga
+                    </button>
                 </div>
 
-                <!-- Tab Content: Vagas -->
-                <div id="contentVagas" class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-900">Minhas Vagas</h2>
-                        <button onclick="navigateTo('criar-vaga.html')" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition flex items-center gap-2">
-                            <i class="fas fa-plus"></i>
-                            Nova Vaga
-                        </button>
+                <div id="vagasList" class="divide-y divide-gray-100 dark:divide-gray-700">
+                    <div class="text-center py-16">
+                        <i class="fas fa-spinner fa-spin text-3xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                        <p class="text-gray-500 dark:text-gray-400">Carregando suas vagas...</p>
                     </div>
-
-                    <div id="vagasList"></div>
                 </div>
-
-                <!-- Tab Content: Profissionais -->
-                <!-- <div id="contentProfissionais" class="p-6 hidden">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Buscar Profissionais Qualificados</h2>
-                    
-                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div>
-                            <label class="text-sm text-gray-600 mb-2 block">Buscar por nome</label>
-                            <input type="text" id="searchInput" placeholder="Digite o nome..." class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                        </div>
-                        <div>
-                            <label class="text-sm text-gray-600 mb-2 block">Especialidade</label>
-                            <select id="especialidadeFilter" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                                <option value="todas">Todas</option>
-                                <option value="pedreiro">Pedreiro</option>
-                                <option value="eletricista">Eletricista</option>
-                                <option value="pintor">Pintor</option>
-                                <option value="encanador">Encanador</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-sm text-gray-600 mb-2 block">Ordenar por</label>
-                            <select id="sortFilter" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                                <option value="rating-desc">Maior Avaliação</option>
-                                <option value="rating-asc">Menor Avaliação</option>
-                                <option value="experiencia-desc">Mais Experiência</option>
-                                <option value="projetos-desc">Mais Projetos</option>
-                                <option value="valor-asc">Menor Valor</option>
-                                <option value="valor-desc">Maior Valor</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="profissionaisList"></div>
-                </div> -->
             </div>
         </div>
     </main>
 
+    <!-- Scripts -->
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
-    
+
     <script>
-        // 1. Proteger página (Verifica se é empresa mesmo)
-        if (typeof requireAuth === 'function') {
-            requireAuth('empresa');
+        // --- LÓGICA DE TEMA (Dark Mode) ---
+        function toggleThemeMenu() {
+            const menu = document.getElementById('themeMenu');
+            menu.classList.toggle('hidden');
         }
 
-        // 2. Função Auxiliar para formatar Data
-        function formatarData(dataString) {
-            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-            return new Date(dataString).toLocaleDateString('pt-BR', options);
+        function setTheme(theme) {
+            const root = document.documentElement;
+            
+            if (theme === 'system') {
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    root.classList.add('dark');
+                } else {
+                    root.classList.remove('dark');
+                }
+            } else {
+                localStorage.setItem('theme', theme);
+                if (theme === 'dark') {
+                    root.classList.add('dark');
+                } else {
+                    root.classList.remove('dark');
+                }
+            }
+            // Fecha o menu após seleção
+            document.getElementById('themeMenu').classList.add('hidden');
         }
-        // Função para levar até a lista de vagas
+
+        // Fecha o menu se clicar fora
+        window.addEventListener('click', function(e) {
+            const btn = document.querySelector('button[onclick="toggleThemeMenu()"]');
+            const menu = document.getElementById('themeMenu');
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // 1. Configuração
+        requireAuth('empresa');
+        updateHeaderForLoggedUser();
+
+        // Data no topo
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR', options);
+
+        // 2. Funções Auxiliares
+        function formatarData(dataISO) {
+            if (!dataISO) return 'Data n/d';
+            return new Date(dataISO).toLocaleDateString('pt-BR');
+        }
+
+        function formatarSalario(min, max) {
+            if (!min) return 'A combinar';
+            const fmt = val => Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+            if (min && !max) return `A partir de ${fmt(min)}`;
+            return `${fmt(min)} - ${fmt(max)}`;
+        }
+
+        // Scroll suave
         function focarNasVagas() {
-        // 1. Garante que a aba "Minhas Vagas" está ativa
-        switchTab('vagas');
-        
-        // 2. Rola a página suavemente até a lista
-        const lista = document.getElementById('contentVagas');
-        lista.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-        // (Opcional) Faz um efeito de "piscar" na lista para chamar atenção
-        lista.classList.add('bg-orange-50');
-        setTimeout(() => {
-            lista.classList.remove('bg-orange-50');
-            lista.classList.add('transition-colors', 'duration-1000');
-        }, 300);
+            const el = document.getElementById('areaListaVagas');
+            el.scrollIntoView({ behavior: 'smooth' });
+            el.classList.add('ring-2', 'ring-orange-300');
+            setTimeout(() => el.classList.remove('ring-2', 'ring-orange-300'), 1500);
         }
 
-        // 3. BUSCAR VAGAS REAIS NO BANCO
-        async function fetchVagasDoBanco() {
-            // Pega o token (lembrando do JSON.parse para tirar aspas extras)
+        // 3. LÓGICA PRINCIPAL
+        async function carregarDashboard() {
+            const container = document.getElementById('vagasList');
             const token = JSON.parse(localStorage.getItem('token'));
 
             try {
                 const response = await fetch(`${API_URL}/minhas-vagas`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
+                const vagas = await response.json();
 
-                if (!response.ok) throw new Error('Falha ao buscar vagas');
+                if (!Array.isArray(vagas)) throw new Error("Formato inválido");
+
+                // Cálculos Estatísticos
+                document.getElementById('totalVagas').textContent = vagas.length;
+                document.getElementById('vagasAtivas').textContent = vagas.filter(v => v.status === 'aberta').length;
                 
-                return await response.json(); // Retorna a lista real!
-            } catch (error) {
-                console.error(error);
-                return []; // Retorna lista vazia se der erro
-            }
-        }
+                const totalCandidatos = vagas.reduce((acc, v) => acc + (parseInt(v.total_candidatos) || 0), 0);
+                document.getElementById('totalCandidatos').textContent = totalCandidatos;
+                document.getElementById('totalVisualizacoes').textContent = '-'; 
 
-        // 4. Renderizar Vagas
-        async function renderVagas() {
-            const container = document.getElementById('vagasList');
-            container.innerHTML = '<div class="text-center py-8 text-gray-500">Carregando vagas...</div>';
+                // Renderização
+                if (vagas.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-16">
+                            <div class="bg-orange-50 dark:bg-orange-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-300 text-3xl">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Nenhuma vaga publicada</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-2 mb-6">Comece criando sua primeira oportunidade.</p>
+                            <button onclick="window.location.href='criar-vaga.html'" class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition">
+                                Criar Vaga
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
 
-            const vagas = await fetchVagasDoBanco();
-            
-            // Atualizar estatísticas do topo
-            document.getElementById('totalVagas').textContent = vagas.length;
-            document.getElementById('vagasAtivas').textContent = vagas.filter(v => v.status === 'aberta').length;
-            // Somar o total de candidatos de todas as vagas para a estatística geral
-            const totalDeCandidatosGeral = vagas.reduce((acc, vaga) => acc + (vaga.total_candidatos || 0), 0);
-            document.getElementById('totalCandidatos').textContent = totalDeCandidatosGeral;
-            
-            if (vagas.length === 0) {
-                // ... (código de lista vazia mantém igual) ...
-                container.innerHTML = `<div class="text-center py-12">Nenhuma vaga...</div>`; 
-                return;
-            }
-            
-            container.innerHTML = vagas.map(vaga => `
-                <div 
-                    class="bg-white border border-gray-200 rounded-lg p-6 mb-4 hover:shadow-md transition-shadow cursor-pointer relative group" 
-                    onclick="window.location.href='gerenciar-candidatos.html?id=${vaga.id}'"
-                    title="Clique para gerenciar candidatos"
-                >
-                    <div class="absolute top-6 right-6 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-
-                    <div class="flex items-start justify-between pr-8">
+                container.innerHTML = vagas.map(vaga => `
+                    <div 
+                        class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer group flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+                        onclick="window.location.href='gerenciar-candidatos.html?id=${vaga.id}'"
+                    >
                         <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-2">
-                                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                            <div class="flex items-center gap-3 mb-1">
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                                     ${vaga.titulo}
                                 </h3>
-                                <span class="px-3 py-1 rounded-full text-sm ${vaga.status === 'aberta' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                                    ${vaga.status === 'aberta' ? 'Ativa' : 'Pausada'}
+                                <span class="text-xs px-2 py-0.5 rounded font-bold uppercase tracking-wide ${vaga.status === 'aberta' ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'}">
+                                    ${vaga.status}
                                 </span>
                             </div>
-                            <p class="text-gray-600 mb-2 capitalize">${vaga.especialidade || 'Geral'}</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <div class="flex items-center gap-1">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    ${vaga.localizacao}
-                                </div>
-                                <span>Publicado em ${formatarData(vaga.created_at)}</span>
+                            
+                            <div class="flex flex-wrap gap-y-1 gap-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-gray-400 dark:text-gray-500"></i> ${vaga.localizacao}</span>
+                                <span class="flex items-center gap-1"><i class="fas fa-tools text-gray-400 dark:text-gray-500"></i> ${vaga.especialidade || 'Geral'}</span>
+                                <span class="flex items-center gap-1"><i class="fas fa-calendar-alt text-gray-400 dark:text-gray-500"></i> ${formatarData(vaga.created_at)}</span>
                             </div>
                         </div>
-                        
-                        <div class="text-right hidden md:block min-w-[120px]">
-                            <div class="text-2xl font-bold text-orange-500 mb-1">
-                                ${vaga.total_candidatos}
+
+                        <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                            <div class="text-center px-4 border-l border-gray-200 dark:border-gray-700">
+                                <div class="text-2xl font-bold text-orange-500 leading-none">${vaga.total_candidatos}</div>
+                                <div class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">Interessados</div>
                             </div>
-                            <div class="text-xs text-gray-500 uppercase font-semibold tracking-wide">
-                                ${vaga.total_candidatos == 1 ? 'Interessado' : 'Interessados'}
-                            </div>
-                            <div class="text-sm text-gray-400 mt-2">
-                                ${vaga.salario_min ? `R$ ${vaga.salario_min}` : 'A combinar'}
+                            
+                            <div class="text-right min-w-[100px]">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">${formatarSalario(vaga.salario_min, vaga.salario_max)}</div>
+                                <div class="text-xs text-blue-600 dark:text-blue-400 font-medium mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
+                                    Gerenciar <i class="fas fa-arrow-right"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
-        }
+                `).join('');
 
-        // --- Lógica das Abas e Profissionais (Mantida igual) ---
-        let currentTab = 'vagas';
-
-        function switchTab(tab) {
-            currentTab = tab;
-            
-            document.getElementById('tabVagas').className = tab === 'vagas' 
-                ? 'px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium'
-                : 'px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium';
-            
-            document.getElementById('tabProfissionais').className = tab === 'profissionais'
-                ? 'px-6 py-4 border-b-2 border-orange-500 text-orange-500 font-medium'
-                : 'px-6 py-4 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-medium';
-            
-            document.getElementById('contentVagas').classList.toggle('hidden', tab !== 'vagas');
-            document.getElementById('contentProfissionais').classList.toggle('hidden', tab !== 'profissionais');
-            
-            if (tab === 'profissionais') {
-                // renderProfissionais(); // Comentei pois ainda não criamos essa rota no backend
-                document.getElementById('profissionaisList').innerHTML = '<p class="text-center text-gray-500 mt-4">Busca de profissionais em desenvolvimento...</p>';
+            } catch (error) {
+                console.error("Erro:", error);
+                container.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-8">Não foi possível carregar as vagas.</div>`;
             }
         }
 
-        // Inicialização
-        renderVagas(); // Chama a função nova
-        
-        // Header Actions
-        if (typeof updateHeaderForLoggedUser === 'function') {
-            updateHeaderForLoggedUser();
-        }
+        // Inicia
+        document.addEventListener('DOMContentLoaded', carregarDashboard);
     </script>
 </body>
 </html>

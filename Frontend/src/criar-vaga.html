@@ -4,91 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Vaga - WorkCity</title>
+    
+    <!-- Tailwind e Ícones -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- Configuração Dark Mode -->
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+        })();
+    </script>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen py-8">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="mb-6">
-                <button onclick="navigateTo('empresa-dashboard.html')" class="px-4 py-2 text-gray-600 hover:text-gray-900 transition flex items-center gap-2">
-                    <i class="fas fa-arrow-left"></i>
-                    Voltar
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <div class="min-h-screen py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Header -->
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <button onclick="window.location.href='empresa-dashboard.html'" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition flex items-center gap-2 mb-2">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Criar Nova Vaga</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Publique uma nova oportunidade para profissionais.</p>
+                </div>
+                
+                <!-- Botão Tema -->
+                <button onclick="toggleTheme()" class="p-3 rounded-full bg-white dark:bg-gray-800 shadow-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition focus:outline-none">
+                    <i class="fas fa-adjust"></i>
                 </button>
-                <h1 class="text-3xl font-bold text-gray-900 mt-4 mb-2">Criar Nova Vaga</h1>
-                <p class="text-gray-600">Publique uma nova oportunidade para profissionais</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 border border-gray-200 dark:border-gray-700 transition-colors">
                 <form id="vagaForm" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- 1. Informações Básicas -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Título da Vaga *</label>
-                            <input type="text" id="titulo" required placeholder="Ex: Pedreiro para Obra Residencial" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título da Vaga *</label>
+                            <input type="text" id="titulo" required placeholder="Ex: Pedreiro para Obra Residencial" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Especialidade *</label>
-                            <select id="especialidade" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Especialidade *</label>
+                            <select id="especialidade" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
                                 <option value="">Selecione...</option>
                                 <option value="pedreiro">Pedreiro</option>
                                 <option value="eletricista">Eletricista</option>
                                 <option value="pintor">Pintor</option>
                                 <option value="encanador">Encanador</option>
                                 <option value="carpinteiro">Carpinteiro</option>
+                                <option value="serralheiro">Serralheiro</option>
                             </select>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Localização *</label>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Estado *</label>
-                                    <select id="ufVaga"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"
-                                        onchange="carregarCidades('ufVaga', 'listaCidadesVaga', 'cidadeVaga')">
-                                        <option value="">UF</option>
-                                    </select>
-                                </div>
-                            
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cidade da Vaga *</label>
-                                   <input 
-                                        type="text" 
-                                        id="cidadeVaga" 
-                                        list="listaCidadesVaga" 
-                                        required
-                                        disabled
-                                        placeholder="Selecione o UF..." 
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-2 focus:ring-orange-500"
-                                    >
-                                    <datalist id="listaCidadesVaga"></datalist>
-                                </div>
+                        <!-- Localização com IBGE -->
+                        <div class="flex gap-2 items-end">
+                            <div class="w-24">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">UF *</label>
+                                <select id="ufVaga" class="w-full px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors" onchange="carregarCidades('ufVaga', 'listaCidadesVaga', 'cidadeVaga')">
+                                    <option value="">UF</option>
+                                </select>
+                            </div>
+                            <div class="flex-1 relative">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cidade *</label>
+                                <input type="text" id="cidadeVaga" list="listaCidadesVaga" required disabled placeholder="Selecione a UF..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
+                                <datalist id="listaCidadesVaga"></datalist>
                             </div>
                         </div>
                     </div>
 
+                    <!-- 2. Descrição -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Descrição da Vaga *</label>
-                        <textarea id="descricao" required rows="4" placeholder="Descreva as responsabilidades e requisitos..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição da Vaga *</label>
+                        <textarea id="descricao" required rows="4" placeholder="Descreva as responsabilidades..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors"></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 3. Detalhes Financeiros e Contrato (Restaurados) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Salário Mínimo (R$)</label>
-                            <input type="number" id="salarioMin" min="0" placeholder="1500" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Salário Mínimo (R$)</label>
+                            <input type="number" id="salarioMin" min="0" placeholder="1500" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Salário Máximo (R$)</label>
-                            <input type="number" id="salarioMax" min="0" placeholder="3000" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Salário Máximo (R$)</label>
+                            <input type="number" id="salarioMax" min="0" placeholder="3000" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Contrato</label>
-                            <select id="tipoContrato" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Contrato</label>
+                            <select id="tipoContrato" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
                                 <option value="">Selecione...</option>
                                 <option value="temporario">Temporário</option>
                                 <option value="permanente">Permanente</option>
@@ -97,26 +115,28 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Experiência Mínima</label>
-                            <input type="text" id="experienciaMinima" placeholder="Ex: 2 anos" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Experiência Mínima</label>
+                            <input type="text" id="experienciaMinima" placeholder="Ex: 2 anos" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors">
                         </div>
                     </div>
 
+                    <!-- 4. Extras (Restaurados) -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Requisitos</label>
-                        <textarea id="requisitos" rows="3" placeholder="Liste os requisitos necessários..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Requisitos</label>
+                        <textarea id="requisitos" rows="3" placeholder="Liste os requisitos necessários..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Benefícios</label>
-                        <textarea id="beneficios" rows="2" placeholder="Liste os benefícios oferecidos..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Benefícios</label>
+                        <textarea id="beneficios" rows="2" placeholder="Liste os benefícios oferecidos..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-colors"></textarea>
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-4 border-t">
-                        <button type="button" onclick="navigateTo('empresa-dashboard.html')" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                    <!-- Botões -->
+                    <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <button type="button" onclick="window.location.href='empresa-dashboard.html'" class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
+                        <button type="submit" class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-bold transition shadow-sm">
                             Publicar Vaga
                         </button>
                     </div>
@@ -125,63 +145,36 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/ibge.js"></script>
-
+    
     <script>
-        // Verifica autenticação ao carregar
-        if (typeof requireAuth === 'function') {
-            requireAuth('empresa');
+        requireAuth('empresa');
+
+        function toggleTheme() {
+            const root = document.documentElement;
+            if (root.classList.contains('dark')) {
+                root.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                root.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
         }
+
         document.addEventListener('DOMContentLoaded', () => {
-        carregarEstados('ufVaga');
+            carregarEstados('ufVaga');
         });
-        // Função para enviar dados ao backend
-        async function criarVaga(vagaData) {
-            // Pega o token salvo no login
-          // Usamos JSON.parse para remover as aspas extras que o stringify colocou
-        const token = JSON.parse(localStorage.getItem('token'));
-            
-            if (!token) {
-                alert('Erro de sessão: Faça login novamente.');
-                window.location.href = 'login-empresa.html';
-                return false;
-            }
 
-            try {
-                // Note: Não redeclaramos API_URL aqui pois ela vem do auth.js
-                const response = await fetch(`${API_URL}/vagas`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    },
-                    body: JSON.stringify(vagaData)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Erro ao salvar vaga');
-                }
-                
-                return true; // Sucesso
-
-            } catch (error) {
-                console.error('Erro detalhado:', error);
-                alert('Erro: ' + error.message);
-                return false; // Falha
-            }
-        }
-
-        // Evento do Formulário
         document.getElementById('vagaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const btnSubmit = this.querySelector('button[type="submit"]');
-            const textoOriginal = btnSubmit.innerText;
-            btnSubmit.innerText = 'Publicando...';
-            btnSubmit.disabled = true;
+            const btn = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = btn.innerText;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+            btn.disabled = true;
 
             const vagaData = {
                 titulo: document.getElementById('titulo').value,
@@ -190,20 +183,33 @@
                 descricao: document.getElementById('descricao').value,
                 salarioMin: document.getElementById('salarioMin').value,
                 salarioMax: document.getElementById('salarioMax').value,
+                // AGORA PEGANDO OS VALORES REAIS DO FORMULÁRIO
                 tipoContrato: document.getElementById('tipoContrato').value,
                 experienciaMinima: document.getElementById('experienciaMinima').value,
                 requisitos: document.getElementById('requisitos').value,
                 beneficios: document.getElementById('beneficios').value
             };
-            
-            const sucesso = await criarVaga(vagaData);
-            
-            if (sucesso) {
-                alert('Vaga criada com sucesso!');
-                window.location.href = 'empresa-dashboard.html';
-            } else {
-                btnSubmit.innerText = textoOriginal;
-                btnSubmit.disabled = false;
+
+            try {
+                const token = JSON.parse(localStorage.getItem('token'));
+                const response = await fetch(`${API_URL}/vagas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(vagaData)
+                });
+
+                if (response.ok) {
+                    alert('Vaga publicada com sucesso!');
+                    window.location.href = 'empresa-dashboard.html';
+                } else {
+                    alert('Erro ao publicar vaga');
+                    btn.innerText = textoOriginal;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert('Erro de conexão');
+                btn.innerText = textoOriginal;
+                btn.disabled = false;
             }
         });
     </script>

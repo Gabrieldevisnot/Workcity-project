@@ -1,68 +1,121 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkCity - Conectando Empresas e Profissionais</title>
+    
+    <!-- SEO: Otimização para Motores de Busca -->
+    <title>WorkCity - Conectando Empresas e Profissionais da Construção</title>
+    <meta name="description" content="Plataforma líder para conexão entre empresas de engenharia civil e profissionais autônomos qualificados. Encontre pedreiros, eletricistas e mais.">
+    <meta name="keywords" content="construção civil, engenharia, pedreiro, eletricista, vagas, obras, reforma, contratação">
+    <meta name="author" content="WorkCity">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph: Para ficar bonito no WhatsApp/LinkedIn -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="WorkCity - O Marketplace da Construção Civil">
+    <meta property="og:description" content="Conectamos empresas a profissionais qualificados rapidamente. Cadastre-se agora.">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630?text=WorkCity+App">
+
+    <!-- Estilos e Scripts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- Configuração do Dark Mode -->
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex flex-col min-h-screen">
+    
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-4 py-3">
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 sticky top-0 z-50 transition-colors">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <button onclick="navigateToHome()" class="flex items-center">
+            <!-- Logo e Navegação Esquerda -->
+            <div class="flex items-center space-x-8">
+                <button onclick="navigateToHome()" class="flex items-center group focus:outline-none">
                     <div class="flex items-center space-x-2">
-                        <i class="fas fa-building text-orange-500 text-3xl"></i>
+                        <i class="fas fa-building text-orange-500 text-3xl group-hover:scale-110 transition-transform"></i>
                         <div>
-                            <h3 class="text-xl font-bold">WorkCity</h3>
-                            <p class="text-sm text-gray-400">Engenharia Civil</p>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">WorkCity</h3>
+                            <p class="text-sm text-gray-400 dark:text-gray-500 font-medium">Engenharia Civil</p>
                         </div>
                     </div>
                 </button>
+                
                 <nav class="hidden md:flex space-x-6">
-                    <button onclick="navigateToHome()" class="text-orange-500 hover:text-gray-900 transition-colors">
+                    <button onclick="navigateToHome()" class="text-orange-500 font-medium hover:text-orange-600 transition-colors">
                         Início
                     </button>
-                    <button class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <button class="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-white transition-colors font-medium">
                         Como Funciona
                     </button>
                 </nav>
             </div>
             
-            <div class="flex items-center space-x-3" id="headerActions">
-                <button onclick="navigateTo('login-empresa.html')" class="hidden sm:inline-flex px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
-                    Sou Empresa
-                </button>
-                <button onclick="navigateTo('login-profissional.html')" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
-                    Sou Profissional
-                </button>
+            <!-- Ações Direita -->
+            <div class="flex items-center space-x-4">
+                <!-- Botão de Tema -->
+                <div class="relative">
+                    <button onclick="toggleThemeMenu()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none">
+                        <i class="fas fa-adjust text-lg"></i>
+                    </button>
+                    <!-- Dropdown do Tema -->
+                    <div id="themeMenu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 border border-gray-200 dark:border-gray-700 z-50">
+                        <button onclick="setTheme('light')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-sun mr-2 text-orange-400"></i> Claro</button>
+                        <button onclick="setTheme('dark')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-moon mr-2 text-blue-400"></i> Escuro</button>
+                        <button onclick="setTheme('system')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-desktop mr-2 text-gray-400"></i> Sistema</button>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação (Container para Auth.js preencher ou default) -->
+                <div class="flex items-center space-x-3" id="headerActions">
+                    <button onclick="navigateTo('login-empresa.html')" class="hidden sm:inline-flex px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition font-medium">
+                        Sou Empresa
+                    </button>
+                    <button onclick="navigateTo('login-profissional.html')" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition font-medium shadow-sm hover:shadow-md">
+                        Sou Profissional
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Botão Flutuante para Usuários Logados -->
+    <!-- Botão Flutuante (Injetado via JS quando logado) -->
     <div id="floatingDashboardBtn" class="hidden"></div>
 
     <!-- Main Content -->
-    <main>
+    <main class="flex-grow">
+        
         <!-- Hero Section -->
-        <section class="bg-gradient-to-b from-orange-50 to-white px-4 py-16">
+        <section class="bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 py-20 transition-colors">
             <div class="max-w-7xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 max-w-4xl mx-auto">
-                    Conectamos empresas de engenharia civil com os melhores profissionais autônomos
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 max-w-5xl mx-auto leading-tight">
+                    Conectamos empresas de engenharia civil com os melhores <span class="text-orange-500">profissionais autônomos</span>
                 </h1>
-                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                <p class="text-lg text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
                     Encontre rapidamente pedreiros, pintores, eletricistas e outros especialistas qualificados 
                     para seus projetos. Gerencie contratos, acompanhe progresso e otimize sua operação.
                 </p>
+                
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button onclick="navigateTo('login-empresa.html')" class="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition flex items-center justify-center gap-2">
+                    <button onclick="navigateTo('login-empresa.html')" class="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition flex items-center justify-center gap-2 font-bold text-lg shadow-lg hover:shadow-orange-500/30 transform hover:-translate-y-1">
                         Sou uma Empresa
                         <i class="fas fa-arrow-right"></i>
                     </button>
-                    <button onclick="navigateTo('login-profissional.html')" class="px-8 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                    <button onclick="navigateTo('login-profissional.html')" class="px-8 py-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition font-bold text-lg bg-white dark:bg-gray-800">
                         Sou um Profissional
                     </button>
                 </div>
@@ -70,32 +123,42 @@
         </section>
 
         <!-- Features Section -->
-        <section class="px-4 py-16 bg-white">
+        <section class="px-4 py-20 bg-white dark:bg-gray-900 transition-colors">
             <div class="max-w-7xl mx-auto">
-                <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white">
                     Por que escolher a WorkCity?
                 </h2>
+                
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-                        <i class="fas fa-map-marker-alt text-orange-500 text-5xl mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Baseado em Localização</h3>
-                        <p class="text-gray-600">
+                    <!-- Card 1 -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-map-marker-alt text-orange-500 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Baseado em Localização</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                             Encontre profissionais próximos ao seu projeto para reduzir custos e tempo de deslocamento.
                         </p>
                     </div>
                     
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-                        <i class="fas fa-users text-orange-500 text-5xl mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Matching Inteligente</h3>
-                        <p class="text-gray-600">
+                    <!-- Card 2 -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-users text-orange-500 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Matching Inteligente</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                             Algoritmo avançado que conecta empresas com profissionais ideais baseado em especialidade e disponibilidade.
                         </p>
                     </div>
                     
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-sm">
-                        <i class="fas fa-clock text-orange-500 text-5xl mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Gestão Completa</h3>
-                        <p class="text-gray-600">
+                    <!-- Card 3 -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-clock text-orange-500 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Gestão Completa</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
                             Gerencie agenda, contratos, pagamentos e acompanhe o progresso dos projetos em tempo real.
                         </p>
                     </div>
@@ -103,57 +166,68 @@
             </div>
         </section>
 
-        <!-- For Companies Section -->
-        <section class="px-4 py-16 bg-orange-50">
+        <!-- For Companies Section (Alternando Background) -->
+        <section class="px-4 py-20 bg-orange-50 dark:bg-gray-800 transition-colors">
             <div class="max-w-7xl mx-auto">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <!-- Texto -->
                     <div>
-                        <h2 class="text-3xl font-bold mb-6 text-gray-900">Para Empresas de Engenharia</h2>
-                        <div class="space-y-4">
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-shield-alt text-orange-500 text-xl mt-1"></i>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-900 dark:text-white">Para Empresas de Engenharia</h2>
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="mt-1 bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg">
+                                    <i class="fas fa-shield-alt text-orange-500 text-xl"></i>
+                                </div>
                                 <div>
-                                    <h4 class="font-semibold text-gray-900 mb-1">Profissionais Verificados</h4>
-                                    <p class="text-gray-600">Todos os profissionais passam por processo de verificação de qualificações e experiência.</p>
+                                    <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Profissionais Verificados</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Todos os profissionais passam por processo de verificação de qualificações e experiência.</p>
                                 </div>
                             </div>
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-star text-orange-500 text-xl mt-1"></i>
+                            <div class="flex items-start space-x-4">
+                                <div class="mt-1 bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg">
+                                    <i class="fas fa-star text-orange-500 text-xl"></i>
+                                </div>
                                 <div>
-                                    <h4 class="font-semibold text-gray-900 mb-1">Sistema de Avaliações</h4>
-                                    <p class="text-gray-600">Avalie e seja avaliado. Construa reputação e encontre os melhores parceiros.</p>
+                                    <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Sistema de Avaliações</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Avalie e seja avaliado. Construa reputação e encontre os melhores parceiros.</p>
                                 </div>
                             </div>
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-clock text-orange-500 text-xl mt-1"></i>
+                            <div class="flex items-start space-x-4">
+                                <div class="mt-1 bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg">
+                                    <i class="fas fa-clock text-orange-500 text-xl"></i>
+                                </div>
                                 <div>
-                                    <h4 class="font-semibold text-gray-900 mb-1">Economia de Tempo</h4>
-                                    <p class="text-gray-600">Reduza de dias para horas o tempo de busca e contratação de profissionais.</p>
+                                    <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Economia de Tempo</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Reduza de dias para horas o tempo de busca e contratação de profissionais.</p>
                                 </div>
                             </div>
                         </div>
-                        <button onclick="navigateTo('login-empresa.html')" class="mt-8 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
+                        <button onclick="navigateTo('login-empresa.html')" class="mt-10 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-bold transition shadow-md">
                             Começar Agora
                         </button>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <h3 class="text-xl font-semibold mb-4 text-gray-900">Estatísticas da Plataforma</h3>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="text-center">
+                    
+                    <!-- Card de Estatísticas (Visual) -->
+                    <div class="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-600">
+                        <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-chart-line text-orange-500"></i> Estatísticas da Plataforma
+                        </h3>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                 <div class="text-3xl font-bold text-orange-500 mb-1">2.500+</div>
-                                <div class="text-gray-600">Profissionais</div>
+                                <div class="text-sm font-medium text-gray-600 dark:text-gray-400">Profissionais</div>
                             </div>
-                            <div class="text-center">
+                            <div class="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                 <div class="text-3xl font-bold text-orange-500 mb-1">180+</div>
-                                <div class="text-gray-600">Empresas</div>
+                                <div class="text-sm font-medium text-gray-600 dark:text-gray-400">Empresas</div>
                             </div>
-                            <div class="text-center">
+                            <div class="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                 <div class="text-3xl font-bold text-orange-500 mb-1">5.200+</div>
-                                <div class="text-gray-600">Projetos</div>
+                                <div class="text-sm font-medium text-gray-600 dark:text-gray-400">Projetos</div>
                             </div>
-                            <div class="text-center">
+                            <div class="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                 <div class="text-3xl font-bold text-orange-500 mb-1">4.8⭐</div>
-                                <div class="text-gray-600">Avaliação</div>
+                                <div class="text-sm font-medium text-gray-600 dark:text-gray-400">Avaliação Média</div>
                             </div>
                         </div>
                     </div>
@@ -161,127 +235,109 @@
             </div>
         </section>
 
-        <!-- For Professionals Section -->
-        <section class="px-4 py-16 bg-white">
-            <div class="max-w-7xl mx-auto text-center">
-                <h2 class="text-3xl font-bold mb-12 text-gray-900">Para Profissionais Autônomos</h2>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="p-6">
-                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-users text-orange-500 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Mais Oportunidades</h3>
-                        <p class="text-gray-600">
-                            Acesse projetos de múltiplas empresas e aumente sua renda mensal.
-                        </p>
-                    </div>
-                    <div class="p-6">
-                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-map-marker-alt text-orange-500 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Trabalhe Próximo</h3>
-                        <p class="text-gray-600">
-                            Encontre projetos na sua região e otimize seu tempo de deslocamento.
-                        </p>
-                    </div>
-                    <div class="p-6">
-                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-shield-alt text-orange-500 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3 text-gray-900">Pagamento Seguro</h3>
-                        <p class="text-gray-600">
-                            Sistema de pagamento garantido e transparente para todos os projetos.
-                        </p>
-                    </div>
-                </div>
-                <button onclick="navigateTo('login-profissional.html')" class="mt-8 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition">
-                    Cadastrar como Profissional
-                </button>
-            </div>
-        </section>
-
-        <!-- CTA Section para Usuários Logados -->
-        <section id="loggedUserCTA" class="hidden px-4 py-20 bg-gradient-to-r from-orange-500 to-orange-600">
-            <div class="max-w-4xl mx-auto text-center">
+        <!-- CTA Section para Usuários Logados (Mantida) -->
+        <section id="loggedUserCTA" class="hidden px-4 py-20 bg-gradient-to-r from-orange-500 to-orange-600 text-center">
+            <div class="max-w-4xl mx-auto">
                 <h2 id="ctaTitle" class="text-3xl font-bold mb-4 text-white"></h2>
                 <p id="ctaDescription" class="text-lg mb-8 text-orange-50"></p>
-                <button id="ctaButton" class="px-10 py-3 bg-white text-orange-600 hover:bg-orange-50 rounded-md transition"></button>
+                <button id="ctaButton" class="px-10 py-3 bg-white text-orange-600 hover:bg-orange-50 rounded-md font-bold transition shadow-lg"></button>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12 mt-16">
+    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Coluna 1: Logo -->
                 <div class="space-y-4">
                     <div class="flex items-center space-x-2">
                         <i class="fas fa-building text-orange-500 text-2xl"></i>
                         <div>
-                            <h3 class="text-xl font-bold">WorkCity</h3>
+                            <h3 class="text-xl font-bold text-white">WorkCity</h3>
                             <p class="text-sm text-gray-400">Engenharia Civil</p>
                         </div>
                     </div>
-                    <p class="text-gray-400 text-sm">
+                    <p class="text-gray-400 text-sm leading-relaxed">
                         Conectando empresas de construção civil com os melhores profissionais. 
                         Simplifique suas contratações e encontre talentos qualificados.
                     </p>
                 </div>
 
+                <!-- Links -->
                 <div>
-                    <h4 class="font-semibold mb-4">Links Rápidos</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Como Funciona</button></li>
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Para Empresas</button></li>
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Para Profissionais</button></li>
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Contato</button></li>
+                    <h4 class="font-bold text-white mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-orange-500 transition">Início</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Para Empresas</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Para Profissionais</a></li>
                     </ul>
                 </div>
 
+                <!-- Suporte -->
                 <div>
-                    <h4 class="font-semibold mb-4">Suporte</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Central de Ajuda</button></li>
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Termos de Uso</button></li>
-                        <li><button class="text-gray-400 hover:text-white transition-colors">Política de Privacidade</button></li>
-                        <li><button class="text-gray-400 hover:text-white transition-colors">FAQ</button></li>
+                    <h4 class="font-bold text-white mb-4">Suporte</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-orange-500 transition">Central de Ajuda</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Termos de Uso</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Política de Privacidade</a></li>
                     </ul>
                 </div>
 
+                <!-- Contato -->
                 <div>
-                    <h4 class="font-semibold mb-4">Contato</h4>
-                    <div class="space-y-3 text-sm">
+                    <h4 class="font-bold text-white mb-4">Contato</h4>
+                    <div class="space-y-3 text-sm text-gray-400">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-envelope text-orange-500"></i>
-                            <span class="text-gray-400">contato@workcity.com.br</span>
+                            <span>contato@workcity.com.br</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-phone text-orange-500"></i>
-                            <span class="text-gray-400">(11) 3333-3333</span>
+                            <span>(11) 3333-3333</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-map-marker-alt text-orange-500"></i>
-                            <span class="text-gray-400">São Paulo, SP</span>
+                            <span>São Paulo, SP</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm">
-                    © 2024 WorkCity. Todos os direitos reservados.
-                </p>
-                <div class="flex items-center space-x-2 mt-4 md:mt-0">
-                    <i class="fas fa-users text-orange-500"></i>
-                    <span class="text-gray-400 text-sm">
-                        Conectando talentos da construção civil
-                    </span>
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2025 WorkCity. Todos os direitos reservados.</p>
+                <div class="flex items-center gap-2 mt-4 md:mt-0">
+                    <span>Feito com <i class="fas fa-heart text-red-500"></i> para a construção civil</span>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
+    <script>
+        // Lógica do Tema (Landing Page)
+        function toggleThemeMenu() { document.getElementById('themeMenu').classList.toggle('hidden'); }
+        function setTheme(theme) {
+            const root = document.documentElement;
+            if (theme === 'system') {
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark');
+                else root.classList.remove('dark');
+            } else {
+                localStorage.setItem('theme', theme);
+                if (theme === 'dark') root.classList.add('dark');
+                else root.classList.remove('dark');
+            }
+            document.getElementById('themeMenu').classList.add('hidden');
+        }
+        window.addEventListener('click', function(e) {
+            const btn = document.querySelector('button[onclick="toggleThemeMenu()"]');
+            const menu = document.getElementById('themeMenu');
+            if (!btn.contains(e.target) && !menu.contains(e.target)) menu.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>
