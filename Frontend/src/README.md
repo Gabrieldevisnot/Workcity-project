@@ -30,7 +30,7 @@ Status: Acompanhamento em tempo real do status das candidaturas.
 
 Frontend: HTML5, Tailwind CSS (CDN), JavaScript Vanilla (ES6+).
 
-Backend: Node.js, Express.js.
+Backend: Node.js, Express.js. ,
 
 Banco de Dados: PostgreSQL.
 
