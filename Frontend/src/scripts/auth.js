@@ -1,18 +1,17 @@
 // DEFINIÇÃO DA API (Conexão com o Backend)
 // ----------------------------------------------------------------
-// Link do Ngrok (Túnel para o seu computador local)
-// ATENÇÃO: Se você reiniciar o Ngrok, este link vai mudar!
+// Link do Ngrok ou Localhost
 const API_URL = 'https://nondisposed-buildable-kelvin.ngrok-free.dev'; 
 // ----------------------------------------------------------------
 
-// Funções de Storage
 const StorageKeys = {
     USER_TYPE: 'workcity_user_type',
     USER_DATA: 'workcity_user_data',
     TOKEN: 'token'
 };
 
-// Salvar no localStorage
+// --- FUNÇÕES DE STORAGE ---
+
 function saveToStorage(key, data) {
     if (typeof data === 'object') {
         localStorage.setItem(key, JSON.stringify(data));
@@ -21,7 +20,6 @@ function saveToStorage(key, data) {
     }
 }
 
-// Carregar do localStorage
 function loadFromStorage(key) {
     const data = localStorage.getItem(key);
     try {
@@ -31,33 +29,30 @@ function loadFromStorage(key) {
     }
 }
 
-// Verificar se usuário está logado
 function isUserLoggedIn() {
     return localStorage.getItem('token') !== null;
 }
 
-// Obter tipo de usuário logado
 function getUserType() {
     const userData = loadFromStorage(StorageKeys.USER_DATA);
     return userData ? userData.type : null;
 }
 
-// Obter dados do usuário logado
 function getUserData() {
     return loadFromStorage(StorageKeys.USER_DATA);
 }
 
-// Logout de usuário
 function logoutUser() {
     localStorage.removeItem(StorageKeys.USER_TYPE);
     localStorage.removeItem(StorageKeys.USER_DATA);
     localStorage.removeItem('token');
-    localStorage.removeItem('workcity_remember_email'); // Opcional: limpar lembrar-me
+    localStorage.removeItem('workcity_remember_email'); 
     localStorage.removeItem('workcity_remember_email_professional');
     window.location.href = 'index.html';
 }
 
-// Proteger páginas
+// --- PROTEÇÃO DE ROTAS ---
+
 function requireAuth(allowedUserType = null) {
     if (!isUserLoggedIn()) {
         window.location.href = 'index.html';
@@ -66,18 +61,19 @@ function requireAuth(allowedUserType = null) {
     
     const currentUserType = getUserType();
     if (allowedUserType && currentUserType !== allowedUserType) {
-        // Redirecionar para o dashboard correto se estiver no lugar errado
+        // Redireciona para o dashboard correto se estiver logado mas na página errada
         if (currentUserType === 'empresa') {
             window.location.href = 'empresa-dashboard.html';
         } else {
-            window.location.href = 'dashboard.html'; // Profissional
+            window.location.href = 'dashboard.html';
         }
         return false;
     }
     return true;
 }
 
-// Atualizar header com informações do usuário
+// --- UI HELPERS ---
+
 function updateHeaderForLoggedUser() {
     const headerActions = document.getElementById('headerActions');
     if (!headerActions) return;
@@ -87,10 +83,13 @@ function updateHeaderForLoggedUser() {
         const userData = getUserData();
         const nome = userData.name ? userData.name.split(' ')[0] : 'Usuário';
         
+        // Cores diferentes para cada tipo
+        const badgeColor = userType === 'empresa' ? 'bg-blue-500' : 'bg-orange-500';
+        
         headerActions.innerHTML = `
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 text-sm">
-                    <div class="w-2 h-2 rounded-full ${userType === 'empresa' ? 'bg-blue-500' : 'bg-orange-500'}"></div>
+                    <div class="w-2 h-2 rounded-full ${badgeColor}"></div>
                     <span class="text-gray-700 dark:text-gray-200 font-medium">Olá, ${nome}</span>
                 </div>
                 <button onclick="logoutUser()" class="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
@@ -101,14 +100,15 @@ function updateHeaderForLoggedUser() {
     }
 }
 
-// Funções de API (Login e Registro)
+// --- API: LOGIN E REGISTRO ---
 
 async function loginUser(email, password) {
+    const btn = document.querySelector('button[type="submit"]');
+    const originalText = btn ? btn.innerText : 'Entrar';
+    
     try {
-        const btn = document.querySelector('button[type="submit"]');
-        const originalText = btn ? btn.innerText : 'Entrar';
         if(btn) {
-            btn.innerText = 'Entrando...';
+            btn.innerText = 'Verificando...';
             btn.disabled = true;
         }
 
@@ -121,16 +121,38 @@ async function loginUser(email, password) {
         const data = await response.json();
 
         if (response.ok) {
-            // Salva token puro (sem aspas extras do JSON.stringify se vier string direta)
-            // Mas nossa API retorna json { token: "..." }
-            localStorage.setItem('token', JSON.stringify(data.token)); 
-            
-            // Salva dados do usuário
+            // --- BLOQUEIO DE TIPO CRUZADO (NOVO) ---
+            const currentPath = window.location.pathname;
+            const userType = data.user.type;
+
+            // Se estou na página de Empresa mas sou Profissional
+            if (currentPath.includes('login-empresa') && userType !== 'empresa') {
+                alert('⚠️ Esta conta é de Profissional.\nPor favor, faça login na área "Sou Profissional".');
+                if(btn) {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+                return; // Para o login
+            }
+
+            // Se estou na página de Profissional mas sou Empresa
+            if (currentPath.includes('login-profissional') && userType !== 'profissional') {
+                alert('⚠️ Esta conta é de Empresa.\nPor favor, faça login na área "Sou Empresa".');
+                if(btn) {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+                return; // Para o login
+            }
+            // ---------------------------------------
+
+            // Salva dados
+            localStorage.setItem('token', JSON.stringify(data.token));
             saveToStorage(StorageKeys.USER_DATA, data.user);
             saveToStorage(StorageKeys.USER_TYPE, data.user.type);
 
             // Redireciona
-            if (data.user.type === 'empresa') {
+            if (userType === 'empresa') {
                 window.location.href = 'empresa-dashboard.html';
             } else {
                 window.location.href = 'dashboard.html';
@@ -142,7 +164,9 @@ async function loginUser(email, password) {
         console.error('Erro no login:', error);
         alert('Erro de conexão com o servidor.');
     } finally {
-        if(btn) {
+        // Só reativa o botão se não tiver redirecionado (sucesso)
+        // Se sucesso, a página vai mudar, então não importa
+        if (!response.ok && btn) { 
             btn.innerText = originalText;
             btn.disabled = false;
         }
@@ -150,9 +174,10 @@ async function loginUser(email, password) {
 }
 
 async function registerUser(userType, userData) {
+    const btn = document.querySelector('button[type="submit"]');
+    const originalText = btn ? btn.innerText : 'Cadastrar';
+    
     try {
-        const btn = document.querySelector('button[type="submit"]');
-        const originalText = btn ? btn.innerText : 'Cadastrar';
         if(btn) {
             btn.innerText = 'Cadastrando...';
             btn.disabled = true;
@@ -171,7 +196,6 @@ async function registerUser(userType, userData) {
 
         if (response.ok) {
             alert('Cadastro realizado com sucesso!');
-            // Login automático ou redirecionar para login
             window.location.href = userType === 'empresa' ? 'login-empresa.html' : 'login-profissional.html';
         } else {
             alert('Erro: ' + (data.message || 'Falha ao cadastrar'));
