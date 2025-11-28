@@ -7,27 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles/main.css">
-    
-    <!-- CONFIGURAÇÃO TAILWIND DARK MODE -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class', // Habilita modo manual via classe 'dark'
-        }
-    </script>
 
-    <!-- SCRIPT DE INICIALIZAÇÃO OTIMIZADO (COPIAR PARA TODAS AS PÁGINAS) -->
-    <!-- Este script roda antes do corpo carregar para evitar "piscar" -->
+    <script>tailwind.config = { darkMode: 'class' }</script>
     <script>
         (function() {
-            // Verifica preferência salva ou do sistema
             const savedTheme = localStorage.getItem('theme');
             const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
         })();
     </script>
 </head>
@@ -41,35 +28,14 @@
                         <i class="fas fa-building text-orange-500 text-3xl"></i>
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">WorkCity</h3>
-                            <p class="text-sm text-gray-900 dark:text-gray-200 font-medium">Área da Empresa</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Área da Empresa</p>
                         </div>
                     </div>
                 </button>
             </div>
             
-            <div class="flex items-center gap-4">
-                <!-- BOTÃO DE TEMA -->
-                <div class="relative">
-                    <button onclick="toggleThemeMenu()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none">
-                        <i class="fas fa-adjust text-xl"></i>
-                    </button>
-                    <!-- Dropdown do Tema -->
-                    <div id="themeMenu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 border border-gray-200 dark:border-gray-700 z-50">
-                        <button onclick="setTheme('light')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-sun mr-2 text-orange-400"></i> Claro
-                        </button>
-                        <button onclick="setTheme('dark')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-moon mr-2 text-blue-400"></i> Escuro
-                        </button>
-                        <button onclick="setTheme('system')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-desktop mr-2 text-gray-400"></i> Sistema
-                        </button>
-                    </div>
-                </div>
-
-                <div id="headerActions" class="flex items-center space-x-3">
-                    <!-- Preenchido via JS -->
-                </div>
+            <div id="headerActions" class="flex items-center space-x-3">
+                <!-- Preenchido via JS -->
             </div>
         </div>
     </header>
@@ -77,178 +43,306 @@
     <!-- Main Content -->
     <main class="min-h-screen py-8 px-4">
         <div class="max-w-7xl mx-auto">
-            <!-- Cabeçalho -->
-            <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <!-- Topo: Boas Vindas e Logo -->
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-2xl overflow-hidden border-2 border-white dark:border-gray-700 shadow-sm relative">
+                    <!-- Logo da Empresa -->
+                    <img id="headerAvatar" src="" class="w-full h-full object-cover hidden">
+                    <span id="headerInicial"><i class="fas fa-building"></i></span>
+                </div>
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Painel de Gestão</h1>
-                    <p class="text-gray-600 dark:text-gray-400">Bem-vindo! Gerencie suas vagas e candidatos.</p>
-                </div>
-                <div class="text-right hidden md:block">
-                    <p class="text-sm text-gray-500 dark:text-gray-400" id="dataAtual">...</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white" id="headerNome">Olá, Empresa</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Gerencie suas vagas e imagem corporativa.</p>
                 </div>
             </div>
 
-            <!-- Cards de Ação Rápida -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Nova Vaga -->
+            <!-- Cards de Ação Rápida (Mantidos) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="actionCards">
                 <div onclick="window.location.href='criar-vaga.html'" class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-500 transition-all cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="fas fa-plus-circle text-6xl text-orange-500"></i>
-                    </div>
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fas fa-plus-circle text-6xl text-orange-500"></i></div>
                     <div class="flex items-center gap-4">
-                        <div class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                            <i class="fas fa-plus text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Nova Vaga</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Publicar oportunidade</p>
-                        </div>
+                        <div class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors"><i class="fas fa-plus text-2xl"></i></div>
+                        <div><h3 class="text-lg font-bold text-gray-900 dark:text-white">Nova Vaga</h3><p class="text-sm text-gray-500 dark:text-gray-400">Publicar oportunidade</p></div>
                     </div>
                 </div>
-
-                <!-- Buscar Talentos -->
                 <div onclick="window.location.href='buscar-profissionais.html'" class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500 transition-all cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="fas fa-search text-6xl text-blue-500"></i>
-                    </div>
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fas fa-search text-6xl text-blue-500"></i></div>
                     <div class="flex items-center gap-4">
-                        <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                            <i class="fas fa-search text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Buscar Talentos</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Recrutamento ativo</p>
-                        </div>
+                        <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors"><i class="fas fa-search text-2xl"></i></div>
+                        <div><h3 class="text-lg font-bold text-gray-900 dark:text-white">Buscar Talentos</h3><p class="text-sm text-gray-500 dark:text-gray-400">Recrutamento ativo</p></div>
                     </div>
                 </div>
-
-                <!-- Gerenciar Vagas -->
                 <div onclick="focarNasVagas()" class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-green-300 dark:hover:border-green-500 transition-all cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="fas fa-clipboard-list text-6xl text-green-500"></i>
-                    </div>
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fas fa-clipboard-list text-6xl text-green-500"></i></div>
                     <div class="flex items-center gap-4">
-                        <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400 group-hover:bg-green-500 group-hover:text-white transition-colors">
-                            <i class="fas fa-tasks text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Minhas Vagas</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Ver candidaturas</p>
-                        </div>
+                        <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400 group-hover:bg-green-500 group-hover:text-white transition-colors"><i class="fas fa-tasks text-2xl"></i></div>
+                        <div><h3 class="text-lg font-bold text-gray-900 dark:text-white">Minhas Vagas</h3><p class="text-sm text-gray-500 dark:text-gray-400">Ver candidaturas</p></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Painel de Estatísticas -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                <!-- Total Vagas -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-orange-500">
-                    <div class="text-3xl font-bold text-orange-500" id="totalVagas">...</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Vagas Publicadas</div>
-                </div>
-                
-                <!-- Vagas Abertas -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-green-500">
-                    <div class="text-3xl font-bold text-green-500" id="vagasAtivas">...</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Vagas Abertas</div>
-                </div>
-
-                <!-- Total Candidatos -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-blue-500">
-                    <div class="text-3xl font-bold text-blue-500" id="totalCandidatos">...</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Candidatos</div>
-                </div>
-                
-                <!-- Visualizações -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 text-center border-b-4 border-yellow-400">
-                    <div class="text-3xl font-bold text-yellow-500" id="totalVisualizacoes">-</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Visualizações</div>
-                </div>
-            </div>
-
-            <!-- Lista de Vagas -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden scroll-mt-24 transition-colors duration-200" id="areaListaVagas">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
-                    <h2 class="text-lg font-bold text-gray-800 dark:text-white">Minhas Vagas</h2>
-                    <button onclick="window.location.href='criar-vaga.html'" class="text-sm text-orange-600 dark:text-orange-400 font-medium hover:underline">
-                        + Nova Vaga
+            <!-- Navegação de Abas (NOVO) -->
+            <div class="bg-white dark:bg-gray-800 rounded-t-lg shadow-sm border-b border-gray-200 dark:border-gray-700 mb-0">
+                <nav class="flex -mb-px">
+                    <button onclick="switchTab('dashboard')" id="tabDashboard" class="px-6 py-4 border-b-2 border-orange-500 text-orange-600 dark:text-orange-400 font-bold text-sm transition-colors">
+                        <i class="fas fa-chart-pie mr-2"></i> Visão Geral
                     </button>
-                </div>
+                    <button onclick="switchTab('perfil')" id="tabPerfil" class="px-6 py-4 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium text-sm transition-colors">
+                        <i class="fas fa-building mr-2"></i> Perfil da Empresa
+                    </button>
+                </nav>
+            </div>
 
-                <div id="vagasList" class="divide-y divide-gray-100 dark:divide-gray-700">
-                    <div class="text-center py-16">
-                        <i class="fas fa-spinner fa-spin text-3xl text-gray-300 dark:text-gray-600 mb-3"></i>
-                        <p class="text-gray-500 dark:text-gray-400">Carregando suas vagas...</p>
+            <!-- CONTEÚDO DAS ABAS -->
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-sm p-6 min-h-[400px]">
+                
+                <!-- 1. ABA DASHBOARD (Estatísticas + Lista) -->
+                <div id="contentDashboard">
+                    <!-- Painel de Estatísticas -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 text-center border-b-4 border-orange-500 shadow-sm">
+                            <div class="text-3xl font-bold text-orange-500" id="totalVagas">...</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Vagas Publicadas</div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 text-center border-b-4 border-green-500 shadow-sm">
+                            <div class="text-3xl font-bold text-green-500" id="vagasAtivas">...</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Vagas Abertas</div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 text-center border-b-4 border-blue-500 shadow-sm">
+                            <div class="text-3xl font-bold text-blue-500" id="totalCandidatos">...</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Candidatos</div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-700/50 rounded-lg p-4 text-center border-b-4 border-yellow-400 shadow-sm">
+                            <div class="text-3xl font-bold text-yellow-500" id="totalVisualizacoes">-</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Visualizações</div>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Vagas -->
+                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden scroll-mt-24" id="areaListaVagas">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h2 class="text-lg font-bold text-gray-800 dark:text-white">Vagas Recentes</h2>
+                            <button onclick="window.location.href='criar-vaga.html'" class="text-sm text-orange-600 dark:text-orange-400 font-medium hover:underline">
+                                + Nova Vaga
+                            </button>
+                        </div>
+                        <div id="vagasList" class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <div class="text-center py-12 text-gray-500 dark:text-gray-400">Carregando...</div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- 2. ABA PERFIL DA EMPRESA -->
+                <div id="contentPerfil" class="hidden">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Editar Dados da Empresa</h2>
+                            <button onclick="salvarPerfil()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium shadow-sm transition flex items-center gap-2">
+                                <i class="fas fa-save"></i> Salvar Alterações
+                            </button>
+                        </div>
+
+                        <form id="formPerfil" class="space-y-6">
+                            <!-- Identidade -->
+                            <div class="bg-gray-50 dark:bg-gray-700/30 p-6 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4">Identidade Corporativa</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Razão Social</label>
+                                        <input type="text" id="perfilNome" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CNPJ (Não editável)</label>
+                                        <input type="text" id="perfilCNPJ" disabled class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-200 dark:bg-gray-600 dark:text-gray-400 cursor-not-allowed">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL do Logotipo</label>
+                                        <div class="flex gap-4">
+                                            <input type="url" id="perfilAvatar" placeholder="https://site.com/logo.png" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 overflow-hidden border border-gray-300 dark:border-gray-500 flex items-center justify-center">
+                                                <img id="previewAvatar" src="" class="w-full h-full object-cover hidden">
+                                                <i class="fas fa-image text-gray-400 text-xs" id="iconAvatar"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Cole o link direto da imagem da sua logo.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contato e Localização -->
+                            <div class="bg-gray-50 dark:bg-gray-700/30 p-6 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4">Contato e Endereço</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail Corporativo</label>
+                                        <input type="email" id="perfilEmail" disabled class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-200 dark:bg-gray-600 dark:text-gray-400 cursor-not-allowed">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telefone</label>
+                                        <input type="tel" id="perfilTelefone" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none">
+                                    </div>
+                                    
+                                    <!-- Endereço -->
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Endereço (Rua, Nº)</label>
+                                        <input type="text" id="perfilEndereco" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none mb-4">
+                                        
+                                        <div class="grid grid-cols-3 gap-4">
+                                            <div>
+                                                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Estado</label>
+                                                <select id="ufPerfil" class="w-full px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white" onchange="carregarCidades('ufPerfil', 'listaCidadesPerfil', 'cidadePerfil')">
+                                                    <option value="">UF</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-span-2 relative">
+                                                <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Cidade</label>
+                                                <input type="text" id="cidadePerfil" list="listaCidadesPerfil" placeholder="Cidade..." disabled class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700">
+                                                <datalist id="listaCidadesPerfil"></datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sobre -->
+                            <div class="bg-gray-50 dark:bg-gray-700/30 p-6 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4">Sobre a Empresa</h3>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição Institucional</label>
+                                    <textarea id="perfilBio" rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Descreva a empresa, área de atuação e cultura..."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
 
-    <!-- Scripts -->
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
+    <script src="scripts/ibge.js"></script>
 
     <script>
-        // --- LÓGICA DE TEMA (Dark Mode) ---
-        function toggleThemeMenu() {
-            const menu = document.getElementById('themeMenu');
-            menu.classList.toggle('hidden');
-        }
-
-        function setTheme(theme) {
-            const root = document.documentElement;
-            
-            if (theme === 'system') {
-                localStorage.removeItem('theme');
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    root.classList.add('dark');
-                } else {
-                    root.classList.remove('dark');
-                }
-            } else {
-                localStorage.setItem('theme', theme);
-                if (theme === 'dark') {
-                    root.classList.add('dark');
-                } else {
-                    root.classList.remove('dark');
-                }
-            }
-            // Fecha o menu após seleção
-            document.getElementById('themeMenu').classList.add('hidden');
-        }
-
-        // Fecha o menu se clicar fora
-        window.addEventListener('click', function(e) {
-            const btn = document.querySelector('button[onclick="toggleThemeMenu()"]');
-            const menu = document.getElementById('themeMenu');
-            if (!btn.contains(e.target) && !menu.contains(e.target)) {
-                menu.classList.add('hidden');
-            }
-        });
-
         // 1. Configuração
         requireAuth('empresa');
         updateHeaderForLoggedUser();
 
-        // Data no topo
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR', options);
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarDashboard();
+            carregarEstados('ufPerfil'); // Prepara IBGE do perfil
+            carregarPerfil(); // Busca dados da empresa
+        });
 
-        // 2. Funções Auxiliares
-        function formatarData(dataISO) {
-            if (!dataISO) return 'Data n/d';
-            return new Date(dataISO).toLocaleDateString('pt-BR');
+        // 2. Navegação de Abas
+        function switchTab(tab) {
+            const btnDash = document.getElementById('tabDashboard');
+            const btnPerfil = document.getElementById('tabPerfil');
+            const contentDash = document.getElementById('contentDashboard');
+            const contentPerfil = document.getElementById('contentPerfil');
+            const actionCards = document.getElementById('actionCards'); // Esconde os cards grandes no perfil
+
+            if (tab === 'dashboard') {
+                btnDash.className = 'px-6 py-4 border-b-2 border-orange-500 text-orange-600 dark:text-orange-400 font-bold text-sm transition-colors';
+                btnPerfil.className = 'px-6 py-4 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium text-sm transition-colors';
+                contentDash.classList.remove('hidden');
+                contentPerfil.classList.add('hidden');
+                if(actionCards) actionCards.classList.remove('hidden');
+                carregarDashboard();
+            } else {
+                btnDash.className = 'px-6 py-4 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium text-sm transition-colors';
+                btnPerfil.className = 'px-6 py-4 border-b-2 border-orange-500 text-orange-600 dark:text-orange-400 font-bold text-sm transition-colors';
+                contentDash.classList.add('hidden');
+                contentPerfil.classList.remove('hidden');
+                if(actionCards) actionCards.classList.add('hidden'); // Esconde cards pra focar no perfil
+                carregarPerfil();
+            }
         }
 
+        // 3. Lógica do Perfil
+        async function carregarPerfil() {
+            const token = JSON.parse(localStorage.getItem('token'));
+            try {
+                const response = await fetch(`${API_URL}/perfil`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const user = await response.json();
+
+                if (response.ok) {
+                    // Preenche Form
+                    document.getElementById('perfilNome').value = user.name;
+                    document.getElementById('perfilCNPJ').value = user.cnpj || 'Não informado';
+                    document.getElementById('perfilEmail').value = user.email;
+                    document.getElementById('perfilTelefone').value = user.phone || '';
+                    document.getElementById('perfilEndereco').value = user.address || '';
+                    document.getElementById('cidadePerfil').value = user.city || '';
+                    document.getElementById('perfilBio').value = user.bio || '';
+                    document.getElementById('perfilAvatar').value = user.avatar_url || '';
+
+                    // Atualiza Header
+                    document.getElementById('headerNome').textContent = `Olá, ${user.name}`;
+                    
+                    // Preview Avatar
+                    if (user.avatar_url) {
+                        const img = document.getElementById('headerAvatar');
+                        img.src = user.avatar_url;
+                        img.classList.remove('hidden');
+                        document.getElementById('headerInicial').classList.add('hidden');
+                        
+                        // Preview no form
+                        document.getElementById('previewAvatar').src = user.avatar_url;
+                        document.getElementById('previewAvatar').classList.remove('hidden');
+                        document.getElementById('iconAvatar').classList.add('hidden');
+                    }
+                }
+            } catch (error) { console.error("Erro perfil:", error); }
+        }
+
+        async function salvarPerfil() {
+            const token = JSON.parse(localStorage.getItem('token'));
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            btn.disabled = true;
+
+            const dados = {
+                name: document.getElementById('perfilNome').value,
+                phone: document.getElementById('perfilTelefone').value,
+                address: document.getElementById('perfilEndereco').value,
+                city: document.getElementById('cidadePerfil').value,
+                bio: document.getElementById('perfilBio').value,
+                avatar_url: document.getElementById('perfilAvatar').value
+                // CNPJ e Email não são enviados pois não podem mudar
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/perfil`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(dados)
+                });
+
+                if (response.ok) {
+                    showToast("Perfil atualizado com sucesso!", "success");
+                    carregarPerfil();
+                } else {
+                    showToast("Erro ao salvar perfil.", "error");
+                }
+            } catch (error) {
+                showToast("Erro de conexão.", "error");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // 4. Dashboard & Formatadores (Mantidos)
+        function formatarData(d) { if(!d) return 'N/A'; return new Date(d).toLocaleDateString('pt-BR'); }
         function formatarSalario(min, max) {
             if (!min) return 'A combinar';
-            const fmt = val => Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-            if (min && !max) return `A partir de ${fmt(min)}`;
-            return `${fmt(min)} - ${fmt(max)}`;
+            const f = (v) => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+            return (min && max) ? `${f(min)} - ${f(max)}` : `A partir de ${f(min)}`;
         }
-
-        // Scroll suave
         function focarNasVagas() {
             const el = document.getElementById('areaListaVagas');
             el.scrollIntoView({ behavior: 'smooth' });
@@ -256,91 +350,37 @@
             setTimeout(() => el.classList.remove('ring-2', 'ring-orange-300'), 1500);
         }
 
-        // 3. LÓGICA PRINCIPAL
         async function carregarDashboard() {
             const container = document.getElementById('vagasList');
             const token = JSON.parse(localStorage.getItem('token'));
-
             try {
-                // 4.1 Busca Vagas
-                const response = await fetch(`${API_URL}/minhas-vagas`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const vagas = await response.json();
-
-                if (!Array.isArray(vagas)) throw new Error("Formato inválido");
-
-                // Cálculos Estatísticos
+                const res = await fetch(`${API_URL}/minhas-vagas`, { headers: { 'Authorization': `Bearer ${token}` }});
+                const vagas = await res.json();
+                if(!Array.isArray(vagas)) throw new Error();
+                
                 document.getElementById('totalVagas').textContent = vagas.length;
                 document.getElementById('vagasAtivas').textContent = vagas.filter(v => v.status === 'aberta').length;
-                
-                const totalCandidatos = vagas.reduce((acc, v) => acc + (parseInt(v.total_candidatos) || 0), 0);
-                document.getElementById('totalCandidatos').textContent = totalCandidatos;
-                document.getElementById('totalVisualizacoes').textContent = '-'; 
+                const totalC = vagas.reduce((acc, v) => acc + (parseInt(v.total_candidatos) || 0), 0);
+                document.getElementById('totalCandidatos').textContent = totalC;
 
-                // Renderização
-                if (vagas.length === 0) {
-                    container.innerHTML = `
-                        <div class="text-center py-16">
-                            <div class="bg-orange-50 dark:bg-orange-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-300 text-3xl">
-                                <i class="fas fa-folder-open"></i>
-                            </div>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Nenhuma vaga publicada</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-2 mb-6">Comece criando sua primeira oportunidade.</p>
-                            <button onclick="window.location.href='criar-vaga.html'" class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition">
-                                Criar Vaga
-                            </button>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = vagas.map(vaga => `
-                    <div 
-                        class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer group flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-                        onclick="window.location.href='gerenciar-candidatos.html?id=${vaga.id}'"
-                    >
+                container.innerHTML = vagas.length ? vagas.map(v => `
+                    <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer group flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+                        onclick="window.location.href='gerenciar-candidatos.html?id=${v.id}'">
                         <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-1">
-                                <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                                    ${vaga.titulo}
-                                </h3>
-                                <span class="text-xs px-2 py-0.5 rounded font-bold uppercase tracking-wide ${vaga.status === 'aberta' ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'}">
-                                    ${vaga.status}
-                                </span>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-y-1 gap-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-gray-400 dark:text-gray-500"></i> ${vaga.localizacao}</span>
-                                <span class="flex items-center gap-1"><i class="fas fa-tools text-gray-400 dark:text-gray-500"></i> ${vaga.especialidade || 'Geral'}</span>
-                                <span class="flex items-center gap-1"><i class="fas fa-calendar-alt text-gray-400 dark:text-gray-500"></i> ${formatarData(vaga.created_at)}</span>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-orange-600 transition-colors">${v.titulo}</h3>
+                            <div class="flex gap-4 text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                <span><i class="fas fa-map-marker-alt"></i> ${v.localizacao}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatarData(v.created_at)}</span>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
-                            <div class="text-center px-4 border-l border-gray-200 dark:border-gray-700">
-                                <div class="text-2xl font-bold text-orange-500 leading-none">${vaga.total_candidatos}</div>
-                                <div class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1">Interessados</div>
-                            </div>
-                            
-                            <div class="text-right min-w-[100px]">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">${formatarSalario(vaga.salario_min, vaga.salario_max)}</div>
-                                <div class="text-xs text-blue-600 dark:text-blue-400 font-medium mt-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
-                                    Gerenciar <i class="fas fa-arrow-right"></i>
-                                </div>
-                            </div>
+                        <div class="text-center px-4 border-l border-gray-200 dark:border-gray-700">
+                            <div class="text-2xl font-bold text-orange-500">${v.total_candidatos}</div>
+                            <div class="text-[10px] text-gray-400 uppercase">Interessados</div>
                         </div>
                     </div>
-                `).join('');
-
-            } catch (error) {
-                console.error("Erro:", error);
-                container.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-8">Não foi possível carregar as vagas.</div>`;
-            }
+                `).join('') : '<div class="text-center py-12 text-gray-500">Nenhuma vaga publicada.</div>';
+            } catch(e) { container.innerHTML = '<p class="text-center text-red-500">Erro ao carregar.</p>'; }
         }
-
-        // Inicia
-        document.addEventListener('DOMContentLoaded', carregarDashboard);
     </script>
 </body>
 </html>
