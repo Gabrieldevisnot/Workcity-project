@@ -128,15 +128,15 @@ async function loginUser(email, password) {
 
             // Se estou na página de Empresa mas sou Profissional
             if (currentPath.includes('login-empresa') && userType !== 'empresa') {
-                alert('⚠️ Esta conta é de Profissional.\nPor favor, faça login na área "Sou Profissional".');
-                // Não marca sucesso para destravar o botão no finally
+                // Substituído alert por showToast (Erro/Aviso)
+                showToast('⚠️ Esta conta é de Profissional. Faça login na área correta.', 'error');
                 return; 
             }
 
             // Se estou na página de Profissional mas sou Empresa
             if (currentPath.includes('login-profissional') && userType !== 'profissional') {
-                alert('⚠️ Esta conta é de Empresa.\nPor favor, faça login na área "Sou Empresa".');
-                // Não marca sucesso para destravar o botão no finally
+                // Substituído alert por showToast (Erro/Aviso)
+                showToast('⚠️ Esta conta é de Empresa. Faça login na área correta.', 'error');
                 return; 
             }
             // ---------------------------------------
@@ -149,21 +149,27 @@ async function loginUser(email, password) {
             saveToStorage(StorageKeys.USER_DATA, data.user);
             saveToStorage(StorageKeys.USER_TYPE, data.user.type);
 
-            // Redireciona
-            if (userType === 'empresa') {
-                window.location.href = 'empresa-dashboard.html';
-            } else {
-                window.location.href = 'dashboard.html';
-            }
+            // Feedback visual antes de redirecionar
+            showToast('Login realizado com sucesso!', 'success');
+
+            // Pequeno delay para o usuário ver o toast antes de mudar de página
+            setTimeout(() => {
+                if (userType === 'empresa') {
+                    window.location.href = 'empresa-dashboard.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            }, 1000);
+
         } else {
-            alert('Erro: ' + (data.message || data));
+            // Substituído alert por showToast (Erro)
+            showToast(data.message || 'Erro ao fazer login', 'error');
         }
     } catch (error) {
         console.error('Erro no login:', error);
-        alert('Erro de conexão com o servidor.');
+        showToast('Erro de conexão com o servidor.', 'error');
     } finally {
         // Só reativa o botão se o login NÃO teve sucesso
-        // Se teve sucesso, a página vai recarregar/mudar, então não precisamos mexer
         if (!loginSuccess && btn) { 
             btn.innerText = originalText;
             btn.disabled = false;
@@ -193,14 +199,19 @@ async function registerUser(userType, userData) {
         const data = await response.json();
 
         if (response.ok) {
-            alert('Cadastro realizado com sucesso!');
-            window.location.href = userType === 'empresa' ? 'login-empresa.html' : 'login-profissional.html';
+            // Substituído alert por showToast (Sucesso)
+            showToast('Cadastro realizado com sucesso! Redirecionando...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = userType === 'empresa' ? 'login-empresa.html' : 'login-profissional.html';
+            }, 1500);
         } else {
-            alert('Erro: ' + (data.message || 'Falha ao cadastrar'));
+            // Substituído alert por showToast (Erro)
+            showToast(data.message || 'Falha ao cadastrar', 'error');
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao conectar com o servidor.');
+        showToast('Erro ao conectar com o servidor.', 'error');
     } finally {
         if(btn) {
             btn.innerText = originalText;
