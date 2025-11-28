@@ -105,6 +105,7 @@ function updateHeaderForLoggedUser() {
 async function loginUser(email, password) {
     const btn = document.querySelector('button[type="submit"]');
     const originalText = btn ? btn.innerText : 'Entrar';
+    let loginSuccess = false; // Flag para controlar o sucesso
     
     try {
         if(btn) {
@@ -121,30 +122,27 @@ async function loginUser(email, password) {
         const data = await response.json();
 
         if (response.ok) {
-            // --- BLOQUEIO DE TIPO CRUZADO (NOVO) ---
+            // --- BLOQUEIO DE TIPO CRUZADO ---
             const currentPath = window.location.pathname;
             const userType = data.user.type;
 
             // Se estou na página de Empresa mas sou Profissional
             if (currentPath.includes('login-empresa') && userType !== 'empresa') {
                 alert('⚠️ Esta conta é de Profissional.\nPor favor, faça login na área "Sou Profissional".');
-                if(btn) {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-                return; // Para o login
+                // Não marca sucesso para destravar o botão no finally
+                return; 
             }
 
             // Se estou na página de Profissional mas sou Empresa
             if (currentPath.includes('login-profissional') && userType !== 'profissional') {
                 alert('⚠️ Esta conta é de Empresa.\nPor favor, faça login na área "Sou Empresa".');
-                if(btn) {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-                return; // Para o login
+                // Não marca sucesso para destravar o botão no finally
+                return; 
             }
             // ---------------------------------------
+
+            // Login Válido
+            loginSuccess = true;
 
             // Salva dados
             localStorage.setItem('token', JSON.stringify(data.token));
@@ -164,9 +162,9 @@ async function loginUser(email, password) {
         console.error('Erro no login:', error);
         alert('Erro de conexão com o servidor.');
     } finally {
-        // Só reativa o botão se não tiver redirecionado (sucesso)
-        // Se sucesso, a página vai mudar, então não importa
-        if (!response.ok && btn) { 
+        // Só reativa o botão se o login NÃO teve sucesso
+        // Se teve sucesso, a página vai recarregar/mudar, então não precisamos mexer
+        if (!loginSuccess && btn) { 
             btn.innerText = originalText;
             btn.disabled = false;
         }
