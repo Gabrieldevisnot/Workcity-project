@@ -1,175 +1,139 @@
-# 🏗️ WorkCity - Plataforma de Conexão para Construção Civil
+🏗️ WorkCity - Plataforma de Conexão Profissional
 
-O **WorkCity** é uma aplicação Full Stack desenvolvida para conectar empresas de construção civil a profissionais qualificados (pedreiros, eletricistas, encanadores, etc.). O sistema facilita o recrutamento ativo e passivo através de um dashboard intuitivo.
+O WorkCity é um marketplace de empregos focado em conectar Empresas e Profissionais (especialmente do setor de serviços e construção civil, como pedreiros, eletricistas, encanadores, etc.). A plataforma permite o recrutamento passivo (candidaturas a vagas) e ativo (empresas convidando profissionais), além de oferecer um chat em tempo real para negociações.
 
----
+🚀 Status do Projeto
 
-## 🚀 Funcionalidades Principais
+Fase Atual: MVP (Produto Mínimo Viável) Funcional.
 
-### 🏢 Para Empresas
-* **Gestão de Vagas:** Criar, visualizar e gerenciar vagas de emprego.
-* **Gestão de Candidatos:** Visualizar interessados, aprovar ou rejeitar candidaturas.
-* **Recrutamento Ativo:** Buscar profissionais por localização/especialidade e enviar convites diretos.
-* **Dashboard:** Estatísticas em tempo real de vagas e candidatos.
+✨ Funcionalidades Implementadas até o momento:
 
-### 👷 Para Profissionais
-* **Feed de Oportunidades:** Busca avançada de vagas com filtros inteligentes (IBGE).
-* **Candidatura:** Aplicação rápida para vagas de interesse.
-* **Gestão de Propostas:** Receber e aceitar/recusar convites de empresas.
-* **Status:** Acompanhamento em tempo real do status das candidaturas (Enviada, Aprovada, Contratado).
+Autenticação Segura: Cadastro e Login separados para Empresas e Profissionais, com senhas criptografadas (Bcrypt) e autenticação via JWT.
 
----
+Dashboards Personalizados:
 
-## 🛠️ Tecnologias Utilizadas
+Empresa: Criação de vagas, gestão de candidaturas, busca de talentos (com filtros) e envio de propostas.
 
-* **Frontend:** HTML5, Tailwind CSS (CDN), JavaScript Vanilla (ES6+).
-* **Backend:** Node.js, Express.js.
-* **Banco de Dados:** PostgreSQL.
-* **Autenticação:** JWT (JSON Web Token) e Bcrypt.js.
-* **Integrações:** API de Localidades do IBGE (Estados e Municípios).
+Profissional: Feed de vagas inteligentes (não mostra vagas já aplicadas), gestão de convites recebidos e candidaturas.
 
----
+Sistema de Match (Conexão Real): O chat entre Empresa e Profissional só é liberado caso haja uma candidatura a uma vaga ou uma proposta aceita.
 
-## 📋 Pré-requisitos
+Chat em Tempo Real: Comunicação instantânea implementada com WebSockets (Socket.io). Histórico de mensagens salvo no banco de dados.
 
-Para rodar este projeto localmente, você precisará de:
-* [Node.js](https://nodejs.org/) (v14+)
-* [PostgreSQL](https://www.postgresql.org/) (instalado e rodando)
-* [Git](https://git-scm.com/)
-* VS Code (recomendado)
+Gestão de Perfil: Atualização de dados cadastrais, especialidades, bio e foto de perfil (via URL).
 
----
+Integração IBGE: Seleção dinâmica de Estados e Cidades consumindo a API pública do IBGE.
 
-## ⚙️ Instalação e Configuração
+UI/UX Moderna: - Interface responsiva utilizando Tailwind CSS.
 
-Siga os passos abaixo para configurar o ambiente de desenvolvimento.
+Suporte completo a Dark Mode (Tema Escuro/Claro).
 
-### 1. Clonar o Repositório
+Menu Dropdown no cabeçalho e notificações interativas (Toasts).
 
-```bash
-git clone [https://github.com/SEU_USUARIO/workcity-app.git](https://github.com/SEU_USUARIO/workcity-app.git)
-cd workcity-app
-2. Configurar o Backend
-Instale as dependências do servidor:
+🛠️ Tecnologias Utilizadas
 
-Bash
+Frontend (Interface)
 
-cd backend
-npm install
-Configuração do Banco de Dados: Abra o arquivo backend/server.js e localize a configuração do Pool. Certifique-se de que a senha e o usuário correspondem ao seu PostgreSQL local:
+HTML5 & CSS3
 
-JavaScript
+JavaScript (Vanilla)
 
-const pool = new Pool({
-    connectionString: 'postgres://postgres:SUA_SENHA_AQUI@localhost:5432/workcity_db'
-});
-3. Criar o Banco de Dados (SQL)
-Abra seu gerenciador de banco de dados (PgAdmin, DBeaver ou Terminal), crie um banco chamado workcity_db e execute o script abaixo para criar a estrutura completa:
+Tailwind CSS (Estilização utilitária via CDN)
 
-SQL
+Socket.io-client (Comunicação em tempo real)
 
--- 1. Tabela de Usuários (Unificada)
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('empresa', 'profissional')),
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50),
-    city VARCHAR(100),
-    state VARCHAR(2),
-    address TEXT,
-    cnpj VARCHAR(20),
-    cpf VARCHAR(20),
-    specialty VARCHAR(100),
-    experience_years INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+Hospedagem: Vercel
 
--- 2. Tabela de Vagas
-CREATE TABLE vagas (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id),
-    titulo VARCHAR(255) NOT NULL,
-    especialidade VARCHAR(100),
-    localizacao VARCHAR(255),
-    descricao TEXT,
-    salario_min DECIMAL(10, 2),
-    salario_max DECIMAL(10, 2),
-    tipo_contrato VARCHAR(50),
-    experiencia_minima VARCHAR(100),
-    requisitos TEXT,
-    beneficios TEXT,
-    status VARCHAR(20) DEFAULT 'aberta',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+Backend (Servidor & API)
 
--- 3. Tabela de Candidaturas (Com Status)
-CREATE TABLE candidaturas (
-    id SERIAL PRIMARY KEY,
-    vaga_id INTEGER REFERENCES vagas(id),
-    profissional_id INTEGER REFERENCES users(id),
-    status VARCHAR(20) DEFAULT 'pendente', -- pendente, aprovado, rejeitado, contratado
-    data_candidatura TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(vaga_id, profissional_id)
-);
+Node.js com Express.js (API RESTful)
 
--- 4. Tabela de Convites (Recrutamento Ativo)
-CREATE TABLE convites (
-    id SERIAL PRIMARY KEY,
-    empresa_id INTEGER REFERENCES users(id),
-    profissional_id INTEGER REFERENCES users(id),
-    vaga_id INTEGER REFERENCES vagas(id),
-    mensagem TEXT,
-    status VARCHAR(20) DEFAULT 'enviado', -- enviado, aceito, recusado
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(vaga_id, profissional_id)
-);
-4. Rodar o Projeto
-Passo 1: Iniciar o Backend No terminal, dentro da pasta backend:
+Prisma ORM (Modelagem e manipulação do banco de dados)
 
-Bash
+Socket.io (Servidor de WebSockets)
 
-node server.js
-(Deve aparecer: Servidor rodando na porta 3000)
+JWT & Bcrypt (Segurança e Autenticação)
 
-Passo 2: Iniciar o Frontend O Frontend deve ser servido para evitar erros de CORS.
+Multer (Preparado para upload de arquivos)
 
-Opção VS Code: Abra a pasta frontend, abra o arquivo index.html e clique em "Go Live" (Extensão Live Server).
+Banco de Dados & Infraestrutura
 
-Opção Terminal:
+PostgreSQL (Banco de dados relacional)
 
-Bash
+Docker & Docker Compose (Containerização do ambiente de desenvolvimento/backend)
 
-cd frontend
-python -m http.server 5500
-# Ou use npx serve
-Acesse no navegador: http://127.0.0.1:5500
+Ngrok (Tunelamento para expor o backend local para o frontend na nuvem)
 
-🧪 Como Testar o Fluxo Completo
-Empresa: Cadastre uma empresa e publique uma vaga.
+🗄️ Modelagem do Banco de Dados (DER)
 
-Profissional: Em aba anônima, cadastre um profissional.
+O sistema possui 5 entidades principais:
 
-Candidatura: No dashboard do profissional, busque a vaga (usando os filtros de cidade/especialidade) e candidate-se.
+Users (Centraliza Empresas e Profissionais, diferenciados por user_type).
 
-Aprovação: Volte ao dashboard da empresa, clique na vaga e aprove o candidato.
+Vagas (Oportunidades criadas pelas empresas).
 
-Convite: Ainda como empresa, vá em "Buscar Profissionais", encontre o usuário e envie um convite para uma vaga.
+Candidaturas (Tabela pivô: Profissional aplica para Vaga).
 
-Aceite: Como profissional, vá na aba "Propostas" e aceite o convite.
+Convites (Tabela pivô: Empresa convida Profissional para Vaga).
 
-🤝 Contribuição
-Este projeto está em desenvolvimento contínuo (Branch develop). Para contribuir:
+Messages (Histórico do chat entre usuários).
 
-Faça um fork do projeto.
+⚙️ Como Rodar o Projeto (Ambiente de Desenvolvimento)
 
-Crie uma branch para sua feature (git checkout -b feature/nova-feature).
+Devido à arquitetura híbrida adotada para desenvolvimento (Frontend na Vercel e Backend Local), siga os passos abaixo para iniciar a aplicação:
 
-Faça o commit (git commit -m 'Adiciona nova feature').
+Pré-requisitos
 
-Faça o push (git push origin feature/nova-feature).
+Docker Desktop rodando.
 
-Abra um Pull Request.
+Node.js instalado.
 
-Desenvolvido com 🧡 por Gabriel Magalhães de Almeida
+Ngrok instalado globalmente (npm install -g ngrok).
+
+Passo 1: Iniciar o Backend e Banco de Dados
+
+Abra o terminal e navegue até a pasta backend.
+
+Suba os containers do Docker:
+
+docker-compose up -d --build
+
+
+Execute as migrações do Prisma para sincronizar as tabelas:
+
+npx prisma migrate dev
+
+
+Passo 2: Expor o Backend (Túnel Ngrok)
+
+Como o Frontend está na web, ele precisa acessar seu backend local.
+
+Abra um novo terminal e inicie o Ngrok na porta do servidor (3000):
+
+ngrok http 3000
+
+
+Copie o link HTTPS gerado pelo Ngrok (ex: https://abcd-1234.ngrok-free.app).
+
+Passo 3: Configurar o Frontend
+
+Vá até o arquivo frontend/scripts/auth.js.
+
+Substitua a constante API_URL pelo novo link gerado pelo Ngrok:
+
+const API_URL = '[https://abcd-1234.ngrok-free.app](https://abcd-1234.ngrok-free.app)';
+
+
+Salve o arquivo. Se estiver usando a Vercel, faça o commit e push para a branch de produção para atualizar o site online.
+
+🔜 Próximos Passos (Roadmap)
+
+[ ] Implementar o upload real de imagens para a foto de perfil usando o Multer (substituindo a entrada de URL).
+
+[ ] Implementar recuperação de senha.
+
+[ ] Refinar validações de formulário no Frontend.
+
+[ ] Paginação no feed de vagas e na busca de profissionais.
+
+Desenvolvido com 💻 e ☕
