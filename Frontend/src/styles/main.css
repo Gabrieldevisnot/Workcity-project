@@ -1,0 +1,48 @@
+/* * Estilos Globais - WorkCity
+ * Contém personalizações que o Tailwind não cobre ou overrides específicos.
+ */
+
+/* =========================================
+   AJUSTES DO HEADER (Visibilidade)
+   ========================================= */
+
+/* Força cores mais escuras/visíveis nos elementos gerados dinamicamente pelo auth.js */
+#headerActions span {
+    color: #111827 !important; /* gray-900 */
+    font-weight: 600 !important;
+}
+
+#headerActions button {
+    color: #111827 !important;
+    font-weight: 600 !important;
+    border-color: #9CA3AF !important; /* gray-400 */
+}
+
+/* Ajustes para Dark Mode */
+.dark #headerActions span {
+    color: #F3F4F6 !important; /* gray-100 */
+}
+
+.dark #headerActions button {
+    color: #F3F4F6 !important;
+    border-color: #4B5563 !important; /* gray-600 */
+    background-color: rgba(31, 41, 55, 0.5); /* gray-800 com opacidade */
+}
+
+.dark #headerActions button:hover {
+    background-color: rgba(55, 65, 81, 1); /* gray-700 */
+}
+
+
+/* =========================================
+   ANIMAÇÕES
+   ========================================= */
+   
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}

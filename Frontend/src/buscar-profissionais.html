@@ -4,77 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar Talentos - WorkCity</title>
+    
+    <!-- Tailwind e Ícones -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Personalizado (Padrão Novo) -->
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- Configuração Dark Mode -->
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemTheme)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <div class="min-h-screen py-8 px-4">
         <div class="max-w-6xl mx-auto">
+            
+            <!-- Header da Página -->
             <div class="mb-8">
-                <button onclick="window.location.href='empresa-dashboard.html'" class="text-gray-600 hover:text-orange-500 mb-4 flex items-center gap-2">
-                    <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
-                </button>
-                <h1 class="text-3xl font-bold text-gray-900">Encontrar Profissionais</h1>
-                <p class="text-gray-600">Busque talentos e convide-os para suas vagas abertas.</p>
-            </div>
+                <div class="flex justify-between items-start mb-4">
+                    <button onclick="window.location.href='empresa-dashboard.html'" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-white transition flex items-center gap-2 group">
+                        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
+                        Voltar ao Dashboard
+                    </button>
 
-            <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="text" id="filtroNome" oninput="buscarProfissionais()" placeholder="Nome do profissional..." class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                    
-                    <select id="filtroEspecialidade" onchange="buscarProfissionais()" class="w-full px-4 py-2 border border-gray-300 rounded-md">
-                        <option value="">Todas as especialidades</option>
-                        <option value="pedreiro">Pedreiro</option>
-                        <option value="eletricista">Eletricista</option>
-                        <option value="pintor">Pintor</option>
-                        <option value="encanador">Encanador</option>
-                    </select>
-
-                    <div class="flex gap-2">
-                        <select id="filtroUF"
-                            class="w-24 px-2 py-2 border border-gray-300 rounded-md text-center font-medium focus:ring-2 focus:ring-orange-500"
-                            onchange="carregarCidades('filtroUF', 'listaCidadesBusca', 'filtroCidade')">
-                            <option value="">UF</option>
-                        </select>
-                    
-                        <div class="flex-1 relative">
-                            <input type="text" id="filtroCidade" list="listaCidadesBusca" placeholder="Cidade..." disabled
-                                onchange="buscarProfissionais()"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100">
-                            <datalist id="listaCidadesBusca"></datalist>
+                    <!-- Botão de Tema -->
+                    <div class="relative">
+                        <button onclick="toggleThemeMenu()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none">
+                            <i class="fas fa-adjust text-xl"></i>
+                        </button>
+                        <!-- Dropdown do Tema -->
+                        <div id="themeMenu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 border border-gray-200 dark:border-gray-700 z-50">
+                            <button onclick="setTheme('light')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-sun mr-2 text-orange-400"></i> Claro</button>
+                            <button onclick="setTheme('dark')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-moon mr-2 text-blue-400"></i> Escuro</button>
+                            <button onclick="setTheme('system')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-desktop mr-2 text-gray-400"></i> Sistema</button>
                         </div>
-                    </div>         </div>
+                    </div>
+                </div>
+
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Encontrar Profissionais</h1>
+                <p class="text-gray-600 dark:text-gray-400">Busque talentos e convide-os para suas vagas abertas.</p>
             </div>
 
+            <!-- Filtros -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mb-8 border border-gray-200 dark:border-gray-700 transition-colors">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <!-- Busca por Nome -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Profissional</label>
+                        <input type="text" id="filtroNome" oninput="buscarProfissionais()" placeholder="Nome..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
+                    </div>
+                    
+                    <!-- Especialidade -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Especialidade</label>
+                        <select id="filtroEspecialidade" onchange="buscarProfissionais()" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-700 dark:text-white">
+                            <option value="">Todas</option>
+                            <option value="pedreiro">Pedreiro</option>
+                            <option value="eletricista">Eletricista</option>
+                            <option value="pintor">Pintor</option>
+                            <option value="encanador">Encanador</option>
+                            <option value="carpinteiro">Carpinteiro</option>
+                            <option value="serralheiro">Serralheiro</option>
+                        </select>
+                    </div>
+
+                    <!-- Localização (IBGE Padronizado) -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Localização</label>
+                        <div class="flex gap-2">
+                            <select id="filtroUF" class="w-24 px-2 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-center font-medium focus:ring-2 focus:ring-orange-500 outline-none bg-white dark:bg-gray-700 dark:text-white" onchange="carregarCidades('filtroUF', 'listaCidadesBusca', 'filtroCidade')">
+                                <option value="">UF</option>
+                            </select>
+                            <div class="flex-1 relative">
+                                <input 
+                                    type="text" 
+                                    id="filtroCidade" 
+                                    list="listaCidadesBusca" 
+                                    placeholder="Cidade..." 
+                                    disabled
+                                    onchange="buscarProfissionais()" 
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 focus:ring-2 focus:ring-orange-500 outline-none dark:placeholder-gray-400"
+                                >
+                                <datalist id="listaCidadesBusca"></datalist>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Profissionais -->
             <div id="listaProfissionais" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="col-span-full text-center py-12 text-gray-500">Carregando talentos...</div>
+                <div class="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-2"></i>
+                    <p>Carregando talentos...</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="modalConvite" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 w-full max-w-md mx-4 shadow-xl transform transition-all">
-            <h2 class="text-xl font-bold mb-4">Convidar Profissional</h2>
-            <p class="text-gray-600 mb-4">Selecione uma das suas vagas para enviar uma proposta para <strong id="nomeProfissionalModal"></strong>.</p>
+    <!-- MODAL DE CONVITE (Com Dark Mode) -->
+    <div id="modalConvite" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-8 w-full max-w-md shadow-xl transform transition-all border border-gray-200 dark:border-gray-700 relative">
+            
+            <!-- Botão Fechar -->
+            <button onclick="fecharModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fas fa-paper-plane text-orange-500"></i> Convidar Profissional
+            </h2>
+            
+            <p class="text-gray-600 dark:text-gray-300 mb-6 text-sm">
+                Selecione uma das suas vagas para enviar uma proposta para <strong id="nomeProfissionalModal" class="text-orange-500"></strong>.
+            </p>
             
             <form id="formConvite" class="space-y-4">
                 <input type="hidden" id="profissionalIdModal">
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Vaga *</label>
-                    <select id="selectVagasEmpresa" required class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Selecione a Vaga *</label>
+                    <select id="selectVagasEmpresa" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-700 dark:text-white">
                         <option value="">Carregando suas vagas...</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Mensagem (Opcional)</label>
-                    <textarea id="mensagemConvite" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="Olá, gostei do seu perfil..."></textarea>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mensagem (Opcional)</label>
+                    <textarea id="mensagemConvite" rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-700 dark:text-white" placeholder="Olá, gostei do seu perfil..."></textarea>
                 </div>
 
-                <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" onclick="fecharModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md">Enviar Convite</button>
+                <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <button type="button" onclick="fecharModal()" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition-colors font-medium shadow-sm flex items-center gap-2">
+                        <i class="fas fa-paper-plane text-xs"></i> Enviar Convite
+                    </button>
                 </div>
             </form>
         </div>
@@ -83,14 +163,38 @@
     <script src="scripts/auth.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/ibge.js"></script>
+    
     <script>
-        requireAuth('empresa');
-        document.addEventListener('DOMContentLoaded', () => {
-        carregarEstados('filtroUF');
-        buscarProfissionais(); 
-    });
+        // --- LÓGICA DE TEMA ---
+        function toggleThemeMenu() { document.getElementById('themeMenu').classList.toggle('hidden'); }
+        function setTheme(theme) {
+            const root = document.documentElement;
+            if (theme === 'system') {
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark');
+                else root.classList.remove('dark');
+            } else {
+                localStorage.setItem('theme', theme);
+                if (theme === 'dark') root.classList.add('dark');
+                else root.classList.remove('dark');
+            }
+            document.getElementById('themeMenu').classList.add('hidden');
+        }
+        window.addEventListener('click', function(e) {
+            const btn = document.querySelector('button[onclick="toggleThemeMenu()"]');
+            const menu = document.getElementById('themeMenu');
+            if (!btn.contains(e.target) && !menu.contains(e.target)) menu.classList.add('hidden');
+        });
 
-        // 1. BUSCAR PROFISSIONAIS
+        // 1. Inicialização
+        requireAuth('empresa');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarEstados('filtroUF');
+            buscarProfissionais();
+        });
+
+        // 2. BUSCAR PROFISSIONAIS
         async function buscarProfissionais() {
             const container = document.getElementById('listaProfissionais');
             const token = JSON.parse(localStorage.getItem('token'));
@@ -111,48 +215,60 @@
                 const profissionais = await response.json();
 
                 if (profissionais.length === 0) {
-                    container.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-lg text-gray-500">Nenhum profissional encontrado.</div>`;
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-16 bg-white dark:bg-gray-800 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
+                            <i class="fas fa-user-slash text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                            <p class="text-gray-500 dark:text-gray-400 font-medium">Nenhum profissional encontrado com esses filtros.</p>
+                        </div>`;
                     return;
                 }
 
                 container.innerHTML = profissionais.map(p => `
-                    <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow flex flex-col items-center text-center">
-                        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-2xl mb-4">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-all flex flex-col items-center text-center group relative overflow-hidden">
+                        <!-- Efeito Hover Borda -->
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-orange-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+
+                        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-2xl mb-4 shadow-sm group-hover:scale-110 transition-transform">
                             ${p.name.charAt(0)}
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900">${p.name}</h3>
-                        <p class="text-orange-600 font-medium mb-2">${p.specialty || 'Geral'}</p>
                         
-                        <div class="text-sm text-gray-500 mb-4 space-y-1">
-                            <p><i class="fas fa-map-marker-alt mr-1"></i> ${p.city || 'Local não informado'}</p>
-                            <p><i class="fas fa-briefcase mr-1"></i> ${p.experience_years || 0} anos de experiência</p>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 line-clamp-1" title="${p.name}">${p.name}</h3>
+                        <p class="text-orange-600 dark:text-orange-400 font-medium text-sm mb-4 px-2 py-1 bg-orange-50 dark:bg-orange-900/20 rounded-full">
+                            ${p.specialty || 'Geral'}
+                        </p>
+                        
+                        <div class="text-sm text-gray-500 dark:text-gray-400 w-full border-t border-gray-100 dark:border-gray-700 pt-4 mt-2 space-y-2">
+                            <p class="flex items-center justify-center gap-2">
+                                <i class="fas fa-map-marker-alt text-gray-400"></i> ${p.city || 'Local n/d'}
+                            </p>
+                            <p class="flex items-center justify-center gap-2">
+                                <i class="fas fa-briefcase text-gray-400"></i> ${p.experience_years || 0} anos exp.
+                            </p>
                         </div>
 
-                        <button onclick="abrirModal('${p.id}', '${p.name}')" class="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition mt-auto">
-                            Convidar para Vaga
+                        <button onclick="abrirModal('${p.id}', '${p.name}')" class="w-full mt-6 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md transition font-medium shadow-sm flex items-center justify-center gap-2">
+                            <i class="fas fa-envelope"></i> Convidar
                         </button>
                     </div>
                 `).join('');
 
             } catch (error) {
                 console.error(error);
-                container.innerHTML = `<div class="col-span-full text-center text-red-500">Erro ao carregar profissionais.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center text-red-500 dark:text-red-400 py-8 bg-red-50 dark:bg-red-900/20 rounded-lg">Erro ao carregar profissionais. Verifique sua conexão.</div>`;
             }
         }
 
-        // 2. CARREGAR VAGAS DA EMPRESA (Para preencher o select do modal)
+        // 3. CARREGAR VAGAS NO MODAL
         async function carregarMinhasVagas() {
             const select = document.getElementById('selectVagasEmpresa');
             const token = JSON.parse(localStorage.getItem('token'));
 
             try {
-                // Reusamos a rota que já criamos antes!
                 const response = await fetch(`${API_URL}/minhas-vagas`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const vagas = await response.json();
                 
-                // Filtra apenas vagas abertas
                 const vagasAbertas = vagas.filter(v => v.status === 'aberta');
 
                 if (vagasAbertas.length === 0) {
@@ -171,13 +287,11 @@
             }
         }
 
-        // 3. LÓGICA DO MODAL
+        // 4. LÓGICA MODAL
         function abrirModal(id, nome) {
             document.getElementById('profissionalIdModal').value = id;
             document.getElementById('nomeProfissionalModal').textContent = nome;
             document.getElementById('modalConvite').classList.remove('hidden');
-            
-            // Carrega as vagas sempre que abrir para garantir dados frescos
             carregarMinhasVagas();
         }
 
@@ -185,7 +299,7 @@
             document.getElementById('modalConvite').classList.add('hidden');
         }
 
-        // 4. ENVIAR CONVITE (SUBMIT)
+        // 5. ENVIAR
         document.getElementById('formConvite').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -198,16 +312,13 @@
 
             const btn = e.target.querySelector('button[type="submit"]');
             const textoOriginal = btn.innerText;
-            btn.innerText = "Enviando...";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             btn.disabled = true;
 
             try {
                 const response = await fetch(`${API_URL}/convites`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ profissionalId, vagaId, mensagem })
                 });
 
@@ -224,13 +335,10 @@
                 console.error(error);
                 alert("Erro de conexão.");
             } finally {
-                btn.innerText = textoOriginal;
+                btn.innerHTML = textoOriginal;
                 btn.disabled = false;
             }
         });
-
-        // Inicializa
-        buscarProfissionais();
     </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// --- MUDANÇA AQUI: Sai 'pg', entra 'Prisma' ---
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 // ----------------------------------------------
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 
-// --- 🕵️‍♂️ O DETETIVE (Adicione este bloco AQUI) ---
+// --- 🕵️‍♂️ O DETETIVE
 app.use((req, res, next) => {
     console.log(`📢 CHEGOU: ${req.method} ${req.url}`);
     next(); // Passa para o próximo passo
@@ -732,7 +732,8 @@ app.get('/perfil', authenticateToken, async (req, res) => {
 
 // 2. ATUALIZAR MEU PERFIL
 app.put('/perfil', authenticateToken, async (req, res) => {
-    const { name, phone, city, specialty, experience_years, bio, avatar_url } = req.body;
+    // Adicionamos 'address' e 'state' na desestruturação
+    const { name, phone, city, state, address, specialty, experience_years, bio, avatar_url } = req.body;
 
     try {
         const updatedUser = await prisma.users.update({
@@ -740,7 +741,9 @@ app.put('/perfil', authenticateToken, async (req, res) => {
             data: {
                 name,
                 phone,
-                city, // Lembre-se que o front manda "Cidade - UF"
+                city, 
+                state,   // Novo campo
+                address, // Novo campo (importante para empresas)
                 specialty,
                 experience_years: experience_years ? parseInt(experience_years) : null,
                 bio,
